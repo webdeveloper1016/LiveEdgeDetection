@@ -10,12 +10,6 @@ android {
         targetSdkVersion 30
         versionCode getGitCommitCount()
         versionName getTag()
-
-        ndk {
-            moduleName = "liveedgedetection"
-            stl = "gnustl_static"
-            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
-        }
     }
 
     buildTypes {
