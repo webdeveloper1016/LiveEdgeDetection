@@ -19,6 +19,6 @@ cd signing
 # Ubuntu 18.04 (openssl 1.1.0g+) needs -md md5
 # https://askubuntu.com/questions/1067762/unable-to-decrypt-text-files-with-openssl-on-ubuntu-18-04/1076708
 openssl aes-256-cbc -a -d -md md5 -k "$CRYPT_PASS" -in release.keystore.enc -out release.keystore
-openssl aes-256-cbc -a -d -md md5 -k "$CRYPT_PASS" -in ./app/google-services.json.enc -out ./app/google-services.json
+openssl aes-256-cbc -a -d -md md5 -k "$CRYPT_PASS" -in ../app/google-services.json.enc -out ../app/google-services.json
 
 cd ..
