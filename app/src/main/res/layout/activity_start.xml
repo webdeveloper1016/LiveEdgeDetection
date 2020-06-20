@@ -57,4 +57,15 @@
         app:layout_constraintTop_toBottomOf="@+id/textAppVersion"
         tools:text="OpenCV version" />
 
+    <TextView
+        android:id="@+id/textBuildType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="monospace"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/textOpenCVVersion"
+        app:layout_constraintTop_toBottomOf="@+id/textOpenCVVersion"
+        tools:text="BuildType" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
