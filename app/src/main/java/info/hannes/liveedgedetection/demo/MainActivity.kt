@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
                 data?.extras?.let {
                     val filePath = it.getString(ScanConstants.SCANNED_RESULT)
                     val baseBitmap = ScanUtils.decodeBitmapFromFile(filePath, ScanConstants.IMAGE_NAME)
-                    scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
                     scanned_image.setImageBitmap(baseBitmap)
+                    scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 finish()
