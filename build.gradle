@@ -23,7 +23,7 @@ ext {
         ndkSelectedVersion = "21.1.6352462"
     } else {
         println "I run somewhere"
-        ndkSelectedVersion = "21.2.6472646"
+        ndkSelectedVersion = "21.3.6528147"
     }
 
     println "ndkSelectedVersion=$ndkSelectedVersion"
