@@ -59,8 +59,6 @@ jobs:
         with:
           name: LiveEdgeDetection-logcat
           path: artifacts/logcat.log
-      - name: png-find
-        run: find screenshots -name '*.png'
       - name: Archive screenshots
         uses: actions/upload-artifact@v1
         with:
