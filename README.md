@@ -17,13 +17,13 @@ LiveEdgeDetection is an Android document detection library built on top of OpenC
 ![Result](https://github.com/hannesa2/LiveEdgeDetection/blob/master/cropped.png)
 
 # Integrating into your project
-This library is available in [JitPack.io](https://jitpack.io/) repository.
+This library is available in [JitPack.io](https://jitpack.io/#hannesa2/LiveEdgeDetection/) repository.
 To use it, make sure to add the below inside root build.gradle file
 
 ```
 allprojects {
     repositories {
-        mavenCentral()
+        ...
         maven { url "https://jitpack.io" }
     }
 }
@@ -33,7 +33,7 @@ and add the repository's url to the app's build.gradle file.
 
 ```
 dependencies {
-   implementation 'com.github.hannesa2:LiveEdgeDetection:1.0.6.7'
+   implementation 'com.github.hannesa2:LiveEdgeDetection:$latestVersion'
 }
 ```
 # Usage
@@ -59,7 +59,7 @@ Bitmap baseBitmap = ScanUtils.decodeBitmapFromFile(filePath, ScanConstants.IMAGE
 
 # License
 ```
-Copyright 2018 hannesa2.
+Copyright 2020 hannesa2.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
