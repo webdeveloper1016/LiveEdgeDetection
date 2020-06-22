@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +21,13 @@ import info.hannes.liveedgedetection.PolygonPoints;
 import info.hannes.liveedgedetection.R;
 import info.hannes.liveedgedetection.ScanUtils;
 import info.hannes.liveedgedetection.activity.ScanActivity;
+import timber.log.Timber;
 
 /**
  * This class defines polygon for cropping
  */
 public class PolygonView extends FrameLayout {
 
-    private static final String TAG = PolygonView.class.getSimpleName();
     private final Context context;
     private Paint paint;
     private ImageView pointer1;
@@ -173,10 +172,10 @@ public class PolygonView extends FrameLayout {
     }
 
     public void resetPoints(PolygonPoints polygonPoints) {
-        Log.v(TAG, "P1:" + pointer1.getX()+","+pointer1.getY()
-                +"\n"+"P2:" + pointer2.getX()+","+pointer2.getY()
-                +"\n"+"P3:" + pointer3.getX()+","+pointer3.getY()
-                +"\n"+"P4:" + pointer4.getX()+","+pointer4.getY());
+        Timber.v("P1:" + pointer1.getX() + "," + pointer1.getY()
+                + "\n" + "P2:" + pointer2.getX() + "," + pointer2.getY()
+                + "\n" + "P3:" + pointer3.getX() + "," + pointer3.getY()
+                + "\n" + "P4:" + pointer4.getX() + "," + pointer4.getY());
         pointer1.setX(polygonPoints.getTopLeftPoint().x);
         pointer1.setY(polygonPoints.getTopLeftPoint().y);
 
@@ -190,10 +189,10 @@ public class PolygonView extends FrameLayout {
         pointer4.setY(polygonPoints.getBottomRightPoint().y);
 
         polygonView.invalidate();
-        Log.v(TAG, "P1:" + pointer1.getX()+","+pointer1.getY()
-                +"\n"+"P2:" + pointer2.getX()+","+pointer2.getY()
-                +"\n"+"P3:" + pointer3.getX()+","+pointer3.getY()
-                +"\n"+"P4:" + pointer4.getX()+","+pointer4.getY());
+        Timber.v("P1:" + pointer1.getX() + "," + pointer1.getY()
+                + "\n" + "P2:" + pointer2.getX() + "," + pointer2.getY()
+                + "\n" + "P3:" + pointer3.getX() + "," + pointer3.getY()
+                + "\n" + "P4:" + pointer4.getX() + "," + pointer4.getY());
     }
 
     @Override

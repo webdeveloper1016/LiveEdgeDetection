@@ -33,12 +33,6 @@ public class ScanCanvasView extends View {
         private final Paint mPaint;
         private final Paint mBorder;
 
-        public ScanShape(Shape shape, Paint paint) {
-            mShape = shape;
-            mPaint = paint;
-            mBorder = null;
-        }
-
         public ScanShape(Shape shape, Paint paint, Paint border) {
             mShape = shape;
             mPaint = paint;
@@ -79,23 +73,9 @@ public class ScanCanvasView extends View {
 
     }
 
-    public ScanShape addShape(Shape shape, Paint paint) {
-        ScanShape scanShape = new ScanShape(shape, paint);
-        shapes.add(scanShape);
-        return scanShape;
-    }
-
     public void addShape(Shape shape, Paint paint, Paint border) {
         ScanShape scanShape = new ScanShape(shape, paint, border);
         shapes.add(scanShape);
-    }
-
-    public void removeShape(ScanShape shape) {
-        shapes.remove(shape);
-    }
-
-    public void removeShape(int index) {
-        shapes.remove(index);
     }
 
     public void clear() {

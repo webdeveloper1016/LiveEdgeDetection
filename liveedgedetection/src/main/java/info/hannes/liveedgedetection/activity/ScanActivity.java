@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +48,7 @@ import info.hannes.liveedgedetection.view.PolygonView;
 import info.hannes.liveedgedetection.view.ProgressDialogFragment;
 import info.hannes.liveedgedetection.view.Quadrilateral;
 import info.hannes.liveedgedetection.view.ScanSurfaceView;
+import timber.log.Timber;
 
 import static android.view.View.GONE;
 
@@ -56,7 +56,6 @@ import static android.view.View.GONE;
  * This class initiates camera and detects edges on live view
  */
 public class ScanActivity extends AppCompatActivity implements IScanner, View.OnClickListener {
-    private static final String TAG = ScanActivity.class.getSimpleName();
 
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 101;
 
@@ -240,17 +239,16 @@ public class ScanActivity extends AppCompatActivity implements IScanner, View.On
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(copyBitmap.getWidth() + 2 * padding, copyBitmap.getHeight() + 2 * padding);
                 layoutParams.gravity = Gravity.CENTER;
                 polygonView.setLayoutParams(layoutParams);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    TransitionManager.beginDelayedTransition(containerScan);
+                TransitionManager.beginDelayedTransition(containerScan);
                 cropLayout.setVisibility(View.VISIBLE);
 
                 cropImageView.setImageBitmap(copyBitmap);
                 cropImageView.setScaleType(ImageView.ScaleType.FIT_XY);
             } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
+                Timber.e(e);
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
         }
     }
 

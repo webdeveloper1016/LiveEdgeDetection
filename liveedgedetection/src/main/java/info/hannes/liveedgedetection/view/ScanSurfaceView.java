@@ -12,7 +12,6 @@ import android.graphics.drawable.shapes.PathShape;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
@@ -411,8 +410,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // We purposely disregard child measurements because act as a
-        // wrapper to a SurfaceView that centers the camera preview instead
-        // of stretching it.
+        // wrapper to a SurfaceView that centers the camera preview instead of stretching it.
         vWidth = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
         vHeight = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
         setMeasuredDimension(vWidth, vHeight);
@@ -469,10 +467,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
             mSurfaceView.layout(left, top, nW, nH);
             scanCanvasView.layout(left, top, nW, nH);
 
-            Log.d("layout", "left:" + left);
-            Log.d("layout", "top:" + top);
-            Log.d("layout", "right:" + nW);
-            Log.d("layout", "bottom:" + nH);
+            Timber.d("left:" + left + " top:" + top + "right:" + " bottom:" + nH);
         }
     }
 }

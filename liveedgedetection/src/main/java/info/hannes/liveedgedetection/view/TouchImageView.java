@@ -39,15 +39,13 @@ import android.widget.Scroller;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import info.hannes.liveedgedetection.ScanUtils;
+import timber.log.Timber;
 
 /**
  * This class provides pinch to zoom capability to an image
  */
 public class TouchImageView extends AppCompatImageView {
 	
-	private static final String DEBUG = "DEBUG";
-	
-	//
 	// SuperMin and SuperMax multipliers. Determine how much the image can be
 	// zoomed below or above the zoom boundaries, before animating back to the
 	// min/max zoom boundary.
@@ -1288,6 +1286,6 @@ public class TouchImageView extends AppCompatImageView {
     private void printMatrixInfo() {
     	float[] n = new float[9];
     	matrix.getValues(n);
-    	Log.d(DEBUG, "Scale: " + n[Matrix.MSCALE_X] + " TransX: " + n[Matrix.MTRANS_X] + " TransY: " + n[Matrix.MTRANS_Y]);
+        Timber.d("Scale: " + n[Matrix.MSCALE_X] + " TransX: " + n[Matrix.MTRANS_X] + " TransY: " + n[Matrix.MTRANS_Y]);
     }
 }

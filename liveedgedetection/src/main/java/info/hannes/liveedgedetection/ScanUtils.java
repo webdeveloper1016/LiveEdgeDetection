@@ -9,7 +9,6 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.hardware.Camera;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Surface;
@@ -37,17 +36,13 @@ import java.util.List;
 import java.util.Map;
 
 import info.hannes.liveedgedetection.view.Quadrilateral;
-
-import static org.opencv.core.CvType.CV_8UC1;
-import static org.opencv.imgproc.Imgproc.THRESH_BINARY;
-import static org.opencv.imgproc.Imgproc.THRESH_OTSU;
+import timber.log.Timber;
 
 /**
  * This class provides utilities for camera.
  */
 
 public class ScanUtils {
-    private static final String TAG = ScanUtils.class.getSimpleName();
 
     public static boolean compareFloats(double left, double right) {
         double epsilon = 0.00000001;
@@ -168,7 +163,7 @@ public class ScanUtils {
             previewAspectRatio = 1.0 / previewAspectRatio;
         }
 
-        Log.d(TAG, "CameraPreview previewAspectRatio " + previewAspectRatio);
+        Timber.d("CameraPreview previewAspectRatio " + previewAspectRatio);
 
         double aspectTolerance = 0.1;
         double bestDifference = Double.MAX_VALUE;
@@ -178,7 +173,7 @@ public class ScanUtils {
 
             // Perfect match
             if (supportedSize.equals(requestedSize)) {
-                Log.d(TAG, "CameraPreview optimalPictureSize " + supportedSize.width + 'x' + supportedSize.height);
+                Timber.d("CameraPreview optimalPictureSize " + supportedSize.width + 'x' + supportedSize.height);
                 return supportedSize;
             }
 
@@ -208,7 +203,7 @@ public class ScanUtils {
                 }
             }
         }
-        Log.d(TAG, "CameraPreview optimalPictureSize " + size.width + 'x' + size.height);
+        Timber.d("CameraPreview optimalPictureSize " + size.width + 'x' + size.height);
         return size;
     }
 
@@ -226,15 +221,13 @@ public class ScanUtils {
         Camera.Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
 
-        int targetHeight = h;
-
         // Try to find an size match aspect ratio and size
         for (Camera.Size size : sizes) {
             double ratio = (double) size.width / size.height;
             if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
-            if (Math.abs(size.height - targetHeight) < minDiff) {
+            if (Math.abs(size.height - h) < minDiff) {
                 optimalSize = size;
-                minDiff = Math.abs(size.height - targetHeight);
+                minDiff = Math.abs(size.height - h);
             }
         }
 
@@ -242,14 +235,14 @@ public class ScanUtils {
         if (optimalSize == null) {
             minDiff = Double.MAX_VALUE;
             for (Camera.Size size : sizes) {
-                if (Math.abs(size.height - targetHeight) < minDiff) {
+                if (Math.abs(size.height - h) < minDiff) {
                     optimalSize = size;
-                    minDiff = Math.abs(size.height - targetHeight);
+                    minDiff = Math.abs(size.height - h);
                 }
             }
         }
 
-        Log.d("optimal preview size", "w: " + optimalSize.width + " h: " + optimalSize.height);
+        Timber.d("optimal preview size w: " + optimalSize.width + " h: " + optimalSize.height);
         return optimalSize;
     }
 
@@ -280,12 +273,10 @@ public class ScanUtils {
     }
 
 
-
     public static double getMaxCosine(double maxCosine, Point[] approxPoints) {
-        Log.i(TAG, "ANGLES ARE:");
         for (int i = 2; i < 5; i++) {
             double cosine = Math.abs(angle(approxPoints[i % 4], approxPoints[i - 2], approxPoints[i - 1]));
-            Log.i(TAG, String.valueOf(cosine));
+            Timber.i(String.valueOf(cosine));
             maxCosine = Math.max(cosine, maxCosine);
         }
         return maxCosine;
@@ -339,29 +330,29 @@ public class ScanUtils {
         //Imgproc.threshold(mGrayMat, mGrayMat, 150, 255, THRESH_BINARY + THRESH_OTSU);
 
         /*
-        *  1. We shall first blur and normalize the image for uniformity,
-        *  2. Truncate light-gray to white and normalize,
-        *  3. Apply canny edge detection,
-        *  4. Cutoff weak edges,
-        *  5. Apply closing(morphology), then proceed to finding contours.
-        */
+         *  1. We shall first blur and normalize the image for uniformity,
+         *  2. Truncate light-gray to white and normalize,
+         *  3. Apply canny edge detection,
+         *  4. Cutoff weak edges,
+         *  5. Apply closing(morphology), then proceed to finding contours.
+         */
 
         // step 1.
         Imgproc.blur(originalMat, originalMat, new Size(ScanConstants.KSIZE_BLUR, ScanConstants.KSIZE_BLUR));
         Core.normalize(originalMat, originalMat, 0, 255, Core.NORM_MINMAX);
         // step 2.
         // As most papers are bright in color, we can use truncation to make it uniformly bright.
-        Imgproc.threshold(originalMat,originalMat, ScanConstants.TRUNC_THRESH,255,Imgproc.THRESH_TRUNC);
+        Imgproc.threshold(originalMat, originalMat, ScanConstants.TRUNC_THRESH, 255, Imgproc.THRESH_TRUNC);
         Core.normalize(originalMat, originalMat, 0, 255, Core.NORM_MINMAX);
         // step 3.
         // After above preprocessing, canny edge detection can now work much better.
         Imgproc.Canny(originalMat, originalMat, ScanConstants.CANNY_THRESH_U, ScanConstants.CANNY_THRESH_L);
         // step 4.
         // Cutoff the remaining weak edges
-        Imgproc.threshold(originalMat,originalMat,ScanConstants.CUTOFF_THRESH,255,Imgproc.THRESH_TOZERO);
+        Imgproc.threshold(originalMat, originalMat, ScanConstants.CUTOFF_THRESH, 255, Imgproc.THRESH_TOZERO);
         // step 5.
         // Closing - closes small gaps. Completes the edges on canny image; AND also reduces stringy lines near edge of paper.
-        Imgproc.morphologyEx(originalMat, originalMat, Imgproc.MORPH_CLOSE, morph_kernel, new Point(-1,-1),1);
+        Imgproc.morphologyEx(originalMat, originalMat, Imgproc.MORPH_CLOSE, morph_kernel, new Point(-1, -1), 1);
 
         // Get only the 10 largest contours (each approximated to their convex hulls)
         List<MatOfPoint> largestContour = findLargestContours(originalMat, 10);
@@ -372,17 +363,19 @@ public class ScanUtils {
         }
         return null;
     }
+
     private static MatOfPoint hull2Points(MatOfInt hull, MatOfPoint contour) {
         List<Integer> indexes = hull.toList();
         List<Point> points = new ArrayList<>();
         List<Point> ctrList = contour.toList();
-        for(Integer index:indexes) {
+        for (Integer index : indexes) {
             points.add(ctrList.get(index));
         }
-        MatOfPoint point= new MatOfPoint();
+        MatOfPoint point = new MatOfPoint();
         point.fromList(points);
         return point;
     }
+
     private static List<MatOfPoint> findLargestContours(Mat inputMat, int NUM_TOP_CONTOURS) {
         Mat mHierarchy = new Mat();
         List<MatOfPoint> mContourList = new ArrayList<>();
@@ -406,7 +399,7 @@ public class ScanUtils {
             Collections.sort(mHullList, new Comparator<MatOfPoint>() {
                 @Override
                 public int compare(MatOfPoint lhs, MatOfPoint rhs) {
-                    return Double.compare(Imgproc.contourArea(rhs),Imgproc.contourArea(lhs));
+                    return Double.compare(Imgproc.contourArea(rhs), Imgproc.contourArea(lhs));
                 }
             });
             return mHullList.subList(0, Math.min(mHullList.size(), NUM_TOP_CONTOURS));
@@ -484,7 +477,7 @@ public class ScanUtils {
             bitmap.compress(Bitmap.CompressFormat.JPEG, mQuality, mFileOutputStream);
             mFileOutputStream.close();
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Timber.e(e);
         }
         mReturnParams[0] = mDirectory.getAbsolutePath();
         mReturnParams[1] = mFileName;
