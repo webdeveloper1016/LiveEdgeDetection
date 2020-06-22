@@ -64,7 +64,7 @@ public class ScanActivity extends AppCompatActivity implements IScanner, View.On
     private FrameLayout cameraPreviewLayout;
     private ScanSurfaceView mImageSurfaceView;
     private boolean isPermissionNotGranted;
-    private static final String mOpenCvLibrary = "opencv_java3";
+    private static final String mOpenCvLibrary = "opencv_java4";
     private static ProgressDialogFragment progressDialogFragment;
     private TextView captureHintText;
     private LinearLayout captureHintLayout;
