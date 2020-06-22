@@ -123,24 +123,6 @@ static def getGitRepository() {
     return token[4]
 }
 
-static def getGitCommitCount() {
-    def process = "git rev-list HEAD --count".execute()
-    return process.text.toInteger()
-}
-
-static def getTag() {
-    def tagVersion = "$System.env.TAG_VERSION"
-    if (tagVersion == "null") {
-        println "No variable TAG_VERSION specified, I'm using 'git describe --abbrev=0'"
-        def process = "git describe --abbrev=0".execute()
-        tagVersion = process.text.toString().trim()
-    } else {
-        def tagVersionToken = tagVersion.split("/")
-        tagVersion = tagVersionToken[2]
-    }
-    return tagVersion
-}
-
 static def getLatestGitHash() {
     def process = "git rev-parse --short HEAD".execute()
     return process.text.toString().trim()

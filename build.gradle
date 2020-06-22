@@ -37,6 +37,24 @@ allprojects {
     }
 }
 
+static def getGitCommitCount() {
+    def process = "git rev-list HEAD --count".execute()
+    return process.text.toInteger()
+}
+
+static def getTag() {
+    def tagVersion = "$System.env.TAG_VERSION"
+    if (tagVersion == "null") {
+        println "No variable TAG_VERSION specified, I'm using 'git describe --abbrev=0'"
+        def process = "git describe --abbrev=0".execute()
+        tagVersion = process.text.toString().trim()
+    } else {
+        def tagVersionToken = tagVersion.split("/")
+        tagVersion = tagVersionToken[2]
+    }
+    return tagVersion
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
