@@ -38,10 +38,6 @@ import java.util.Map;
 import info.hannes.liveedgedetection.view.Quadrilateral;
 import timber.log.Timber;
 
-/**
- * This class provides utilities for camera.
- */
-
 public class ScanUtils {
 
     public static boolean compareFloats(double left, double right) {
@@ -297,7 +293,7 @@ public class ScanUtils {
         Comparator<Point> sumComparator = new Comparator<Point>() {
             @Override
             public int compare(Point lhs, Point rhs) {
-                return Double.valueOf(lhs.y + lhs.x).compareTo(rhs.y + rhs.x);
+                return Double.compare(lhs.y + lhs.x, rhs.y + rhs.x);
             }
         };
 
@@ -305,7 +301,7 @@ public class ScanUtils {
 
             @Override
             public int compare(Point lhs, Point rhs) {
-                return Double.valueOf(lhs.y - lhs.x).compareTo(rhs.y - rhs.x);
+                return Double.compare(lhs.y - lhs.x, rhs.y - rhs.x);
             }
         };
 
@@ -357,9 +353,7 @@ public class ScanUtils {
         // Get only the 10 largest contours (each approximated to their convex hulls)
         List<MatOfPoint> largestContour = findLargestContours(originalMat, 10);
         if (null != largestContour) {
-            Quadrilateral mLargestRect = findQuadrilateral(largestContour);
-            if (mLargestRect != null)
-                return mLargestRect;
+            return findQuadrilateral(largestContour);
         }
         return null;
     }
@@ -465,30 +459,29 @@ public class ScanUtils {
         return output;
     }
 
-    public static String[] saveToInternalMemory(Bitmap bitmap, String mFileDirectory, String
-            mFileName, Context mContext, int mQuality) {
+    public static String[] saveToInternalMemory(Bitmap bitmap, String fileDirectory, String fileName, Context context, int quality) {
 
-        String[] mReturnParams = new String[2];
-        File mDirectory = getBaseDirectoryFromPathString(mFileDirectory, mContext);
-        File mPath = new File(mDirectory, mFileName);
+        String[] returnParams = new String[2];
+        File directory = getBaseDirectoryFromPathString(fileDirectory, context);
+        File path = new File(directory, fileName);
         try {
-            FileOutputStream mFileOutputStream = new FileOutputStream(mPath);
+            FileOutputStream fileOutputStream = new FileOutputStream(path);
             //Compress method used on the Bitmap object to write  image to output stream
-            bitmap.compress(Bitmap.CompressFormat.JPEG, mQuality, mFileOutputStream);
-            mFileOutputStream.close();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
+            fileOutputStream.close();
         } catch (Exception e) {
             Timber.e(e);
         }
-        mReturnParams[0] = mDirectory.getAbsolutePath();
-        mReturnParams[1] = mFileName;
-        return mReturnParams;
+        returnParams[0] = directory.getAbsolutePath();
+        returnParams[1] = fileName;
+        return returnParams;
     }
 
     private static File getBaseDirectoryFromPathString(String mPath, Context mContext) {
 
-        ContextWrapper mContextWrapper = new ContextWrapper(mContext);
+        ContextWrapper contextWrapper = new ContextWrapper(mContext);
 
-        return mContextWrapper.getDir(mPath, Context.MODE_PRIVATE);
+        return contextWrapper.getDir(mPath, Context.MODE_PRIVATE);
     }
 
     public static Bitmap decodeBitmapFromFile(String path, String imageName) {
@@ -496,8 +489,7 @@ public class ScanUtils {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-        return BitmapFactory.decodeFile(new File(path, imageName).getAbsolutePath(),
-                options);
+        return BitmapFactory.decodeFile(new File(path, imageName).getAbsolutePath(), options);
     }
 
     /*
@@ -559,8 +551,7 @@ public class ScanUtils {
         return bmp;
     }
 
-    private static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -573,8 +564,7 @@ public class ScanUtils {
 
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
                 inSampleSize *= 2;
             }
         }

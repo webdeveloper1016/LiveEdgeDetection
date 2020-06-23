@@ -197,8 +197,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         } else {
             copyBitmap
         }
-        val path = ScanUtils.saveToInternalMemory(croppedBitmap, ScanConstants.IMAGE_DIR,
-                ScanConstants.IMAGE_NAME, this@ScanActivity, 90)[0]
+        val path = ScanUtils.saveToInternalMemory(croppedBitmap, ScanConstants.INTERNAL_IMAGE_DIR, ScanConstants.IMAGE_NAME, this@ScanActivity, 90)[0]
         setResult(Activity.RESULT_OK, Intent().putExtra(ScanConstants.SCANNED_RESULT, path))
         //bitmap.recycle();
         System.gc()
