@@ -2,7 +2,6 @@ package info.hannes.liveedgedetection;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -26,8 +25,6 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.utils.Converters;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -459,39 +456,6 @@ public class ScanUtils {
         return output;
     }
 
-    public static String[] saveToInternalMemory(Bitmap bitmap, String fileDirectory, String fileName, Context context, int quality) {
-
-        String[] returnParams = new String[2];
-        File directory = getBaseDirectoryFromPathString(fileDirectory, context);
-        File path = new File(directory, fileName);
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(path);
-            //Compress method used on the Bitmap object to write  image to output stream
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
-            fileOutputStream.close();
-        } catch (Exception e) {
-            Timber.e(e);
-        }
-        returnParams[0] = directory.getAbsolutePath();
-        returnParams[1] = fileName;
-        return returnParams;
-    }
-
-    private static File getBaseDirectoryFromPathString(String mPath, Context mContext) {
-
-        ContextWrapper contextWrapper = new ContextWrapper(mContext);
-
-        return contextWrapper.getDir(mPath, Context.MODE_PRIVATE);
-    }
-
-    public static Bitmap decodeBitmapFromFile(String path, String imageName) {
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-        return BitmapFactory.decodeFile(new File(path, imageName).getAbsolutePath(), options);
-    }
-
     /*
      * This method converts the dp value to px
      * @param context context
@@ -501,36 +465,6 @@ public class ScanUtils {
     public static int dp2px(Context context, float dp) {
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
         return Math.round(px);
-    }
-
-
-    public static Bitmap decodeBitmapFromByteArray(byte[] data, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeByteArray(data, 0, data.length, options);
-
-        // Calculate inSampleSize
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-        options.inSampleSize = inSampleSize;
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
     }
 
     @Deprecated
