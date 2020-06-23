@@ -2,13 +2,11 @@ package info.hannes.liveedgedetection.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.transition.TransitionManager;
@@ -71,8 +69,6 @@ public class ScanActivity extends AppCompatActivity implements IScanner, View.On
     public final static Stack<PolygonPoints> allDraggedPointsStack = new Stack<>();
     private PolygonView polygonView;
     private ImageView cropImageView;
-    private View cropAcceptBtn;
-    private View cropRejectBtn;
     private Bitmap copyBitmap;
     private FrameLayout cropLayout;
 
@@ -92,16 +88,15 @@ public class ScanActivity extends AppCompatActivity implements IScanner, View.On
         captureHintText = findViewById(R.id.capture_hint_text);
         polygonView = findViewById(R.id.polygon_view);
         cropImageView = findViewById(R.id.crop_image_view);
-        cropAcceptBtn = findViewById(R.id.crop_accept_btn);
-        cropRejectBtn = findViewById(R.id.crop_reject_btn);
+        View cropAcceptBtn = findViewById(R.id.crop_accept_btn);
+        View cropRejectBtn = findViewById(R.id.crop_reject_btn);
         cropLayout = findViewById(R.id.crop_layout);
 
         cropAcceptBtn.setOnClickListener(this);
         cropRejectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    TransitionManager.beginDelayedTransition(containerScan);
+                TransitionManager.beginDelayedTransition(containerScan);
                 cropLayout.setVisibility(View.GONE);
                 mImageSurfaceView.setPreviewCallback();
             }
@@ -110,8 +105,7 @@ public class ScanActivity extends AppCompatActivity implements IScanner, View.On
     }
 
     private void checkCameraPermissions() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             isPermissionNotGranted = true;
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.CAMERA)) {
@@ -132,8 +126,7 @@ public class ScanActivity extends AppCompatActivity implements IScanner, View.On
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_CAMERA:
                 onRequestCamera(grantResults);
@@ -144,8 +137,7 @@ public class ScanActivity extends AppCompatActivity implements IScanner, View.On
     }
 
     private void onRequestCamera(int[] grantResults) {
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -250,21 +242,6 @@ public class ScanActivity extends AppCompatActivity implements IScanner, View.On
         } catch (Exception e) {
             Timber.e(e);
         }
-    }
-
-    private synchronized void showProgressDialog(String message) {
-        if (progressDialogFragment != null && progressDialogFragment.isVisible()) {
-            // Before creating another loading dialog, close all opened loading dialogs (if any)
-            progressDialogFragment.dismissAllowingStateLoss();
-        }
-        progressDialogFragment = null;
-        progressDialogFragment = new ProgressDialogFragment(message);
-        FragmentManager fm = getFragmentManager();
-        progressDialogFragment.show(fm, ProgressDialogFragment.class.toString());
-    }
-
-    private synchronized void dismissDialog() {
-        progressDialogFragment.dismissAllowingStateLoss();
     }
 
     static {
