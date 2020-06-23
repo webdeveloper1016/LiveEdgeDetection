@@ -42,7 +42,7 @@ import static org.opencv.core.CvType.CV_8UC1;
 public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callback {
 
     SurfaceView mSurfaceView;
-    private final info.hannes.liveedgedetection.view.ScanCanvasView scanCanvasView;
+    private final ScanCanvasView scanCanvasView;
     private int vWidth = 0;
     private int vHeight = 0;
 
@@ -61,7 +61,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         mSurfaceView = new SurfaceView(context);
         addView(mSurfaceView);
         this.context = context;
-        this.scanCanvasView = new info.hannes.liveedgedetection.view.ScanCanvasView(context);
+        this.scanCanvasView = new ScanCanvasView(context);
         addView(scanCanvasView);
         SurfaceHolder surfaceHolder = mSurfaceView.getHolder();
         surfaceHolder.addCallback(this);
@@ -73,7 +73,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         try {
             requestLayout();
             openCamera();
-            this.camera.setPreviewDisplay(holder);
+            camera.setPreviewDisplay(holder);
         } catch (IOException e) {
             Timber.e(e);
         }
@@ -157,8 +157,8 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     }
 
     public void setPreviewCallback() {
-        this.camera.startPreview();
-        this.camera.setPreviewCallback(previewCallback);
+        camera.startPreview();
+        camera.setPreviewCallback(previewCallback);
     }
 
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
@@ -179,7 +179,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
                     Size originalPreviewSize = mat.size();
                     int originalPreviewArea = mat.rows() * mat.cols();
 
-                    info.hannes.liveedgedetection.view.Quadrilateral largestQuad = ScanUtils.detectLargestQuadrilateral(mat);
+                    Quadrilateral largestQuad = ScanUtils.detectLargestQuadrilateral(mat);
                     clearAndInvalidateCanvas();
 
                     mat.release();
