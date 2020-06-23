@@ -10,7 +10,7 @@
     <application android:supportsRtl="true">
         <activity
             android:name=".activity.ScanActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppTheme"/>
 
     </application>
 
