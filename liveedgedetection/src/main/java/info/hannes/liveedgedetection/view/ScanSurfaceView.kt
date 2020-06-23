@@ -302,7 +302,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         camera.stopPreview()
         iScanner.displayHint(ScanHint.NO_MESSAGE)
         clearAndInvalidateCanvas()
-        var bitmap = ScanUtils.decodeBitmapFromByteArray(data, ScanConstants.HIGHER_SAMPLING_THRESHOLD, ScanConstants.HIGHER_SAMPLING_THRESHOLD)
+        var bitmap = FileUtils.decodeBitmapFromByteArray(data, ScanConstants.HIGHER_SAMPLING_THRESHOLD, ScanConstants.HIGHER_SAMPLING_THRESHOLD)
         val matrix = Matrix()
         matrix.postRotate(90f)
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)

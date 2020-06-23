@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import info.hannes.github.AppUpdateHelper
+import info.hannes.liveedgedetection.FileUtils
 import info.hannes.liveedgedetection.ScanConstants
-import info.hannes.liveedgedetection.ScanUtils
 import info.hannes.liveedgedetection.activity.ScanActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -37,14 +37,17 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                data?.extras?.let {
-                    val filePath = it.getString(ScanConstants.SCANNED_RESULT)
-                    val baseBitmap = ScanUtils.decodeBitmapFromFile(filePath, ScanConstants.IMAGE_NAME)
-                    scanned_image.setImageBitmap(baseBitmap)
-                    scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
+                data?.extras?.let { bundle ->
+                    val filePath = bundle.getString(ScanConstants.SCANNED_RESULT)
+                    filePath?.let {
+                        val baseBitmap = FileUtils.decodeBitmapFromFile(it, ScanConstants.IMAGE_NAME)
+                        scanned_image.setImageBitmap(baseBitmap)
+                        scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
 
-                    Toast.makeText(this, filePath, Toast.LENGTH_LONG).show()
-                    Timber.d(filePath)
+                        Toast.makeText(this, filePath, Toast.LENGTH_LONG).show()
+                        Timber.d(filePath)
+                    }
+
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 finish()
