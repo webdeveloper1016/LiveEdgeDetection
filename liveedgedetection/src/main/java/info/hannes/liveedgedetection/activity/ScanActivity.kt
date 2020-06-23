@@ -13,12 +13,13 @@ import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.View
 import android.view.Window
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import info.hannes.liveedgedetection.*
-import info.hannes.liveedgedetection.view.PolygonView
 import info.hannes.liveedgedetection.view.ScanSurfaceView
 import kotlinx.android.synthetic.main.activity_scan.*
 import org.opencv.android.Utils
@@ -33,13 +34,8 @@ import java.util.*
  * This class initiates camera and detects edges on live view
  */
 class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
-    private var cameraPreviewLayout: FrameLayout? = null
-    private var mImageSurfaceView: ScanSurfaceView? = null
+    private var imageSurfaceView: ScanSurfaceView? = null
     private var isPermissionNotGranted = false
-    private var captureHintText: TextView? = null
-    private var captureHintLayout: LinearLayout? = null
-    private var polygonView: PolygonView? = null
-    private var cropImageView: ImageView? = null
     private var copyBitmap: Bitmap? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,18 +45,11 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     }
 
     private fun init() {
-        cameraPreviewLayout = findViewById(R.id.camera_preview)
-        captureHintLayout = findViewById(R.id.capture_hint_layout)
-        captureHintText = findViewById(R.id.capture_hint_text)
-        polygonView = findViewById(R.id.polygon_view)
-        cropImageView = findViewById(R.id.crop_image_view)
-        val cropAcceptBtn = findViewById<View>(R.id.crop_accept_btn)
-        val cropRejectBtn = findViewById<View>(R.id.crop_reject_btn)
-        cropAcceptBtn.setOnClickListener(this)
-        cropRejectBtn.setOnClickListener {
+        crop_accept_btn.setOnClickListener(this)
+        crop_reject_btn.setOnClickListener {
             TransitionManager.beginDelayedTransition(container_scan)
-            crop_layout.setVisibility(View.GONE)
-            mImageSurfaceView!!.setPreviewCallback()
+            crop_layout.visibility = View.GONE
+            imageSurfaceView?.setPreviewCallback()
         }
         checkCameraPermissions()
     }
@@ -77,8 +66,8 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
             }
         } else {
             if (!isPermissionNotGranted) {
-                mImageSurfaceView = ScanSurfaceView(this@ScanActivity, this)
-                cameraPreviewLayout!!.addView(mImageSurfaceView)
+                imageSurfaceView = ScanSurfaceView(this@ScanActivity, this)
+                camera_preview.addView(imageSurfaceView)
             } else {
                 isPermissionNotGranted = false
             }
@@ -97,8 +86,8 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Handler().postDelayed({
                 runOnUiThread {
-                    mImageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity)
-                    cameraPreviewLayout!!.addView(mImageSurfaceView)
+                    imageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity)
+                    camera_preview.addView(imageSurfaceView)
                 }
             }, 500)
         } else {
@@ -108,31 +97,29 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     }
 
     override fun displayHint(scanHint: ScanHint) {
-        captureHintLayout!!.visibility = View.VISIBLE
+        capture_hint_layout.visibility = View.VISIBLE
         when (scanHint) {
             ScanHint.MOVE_CLOSER -> {
-                captureHintText!!.text = resources.getString(R.string.move_closer)
-                captureHintLayout!!.background = resources.getDrawable(R.drawable.hint_red)
+                capture_hint_text.text = resources.getString(R.string.move_closer)
+                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_red)
             }
             ScanHint.MOVE_AWAY -> {
-                captureHintText!!.text = resources.getString(R.string.move_away)
-                captureHintLayout!!.background = resources.getDrawable(R.drawable.hint_red)
+                capture_hint_text.text = resources.getString(R.string.move_away)
+                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_red)
             }
             ScanHint.ADJUST_ANGLE -> {
-                captureHintText!!.text = resources.getString(R.string.adjust_angle)
-                captureHintLayout!!.background = resources.getDrawable(R.drawable.hint_red)
+                capture_hint_text.text = resources.getString(R.string.adjust_angle)
+                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_red)
             }
             ScanHint.FIND_RECT -> {
-                captureHintText!!.text = resources.getString(R.string.finding_rect)
-                captureHintLayout!!.background = resources.getDrawable(R.drawable.hint_white)
+                capture_hint_text.text = resources.getString(R.string.finding_rect)
+                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_white)
             }
             ScanHint.CAPTURING_IMAGE -> {
-                captureHintText!!.text = resources.getString(R.string.hold_still)
-                captureHintLayout!!.background = resources.getDrawable(R.drawable.hint_green)
+                capture_hint_text.text = resources.getString(R.string.hold_still)
+                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_green)
             }
-            ScanHint.NO_MESSAGE -> captureHintLayout!!.visibility = View.GONE
-            else -> {
-            }
+            ScanHint.NO_MESSAGE -> capture_hint_layout.visibility = View.GONE
         }
     }
 
@@ -168,15 +155,15 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
                     for (pointF in points) {
                         pointFs[++index] = pointF
                     }
-                    polygonView!!.points = pointFs
+                    polygon_view.points = pointFs
                     val padding = resources.getDimension(R.dimen.scan_padding).toInt()
                     val layoutParams = FrameLayout.LayoutParams(it.getWidth() + 2 * padding, it.getHeight() + 2 * padding)
                     layoutParams.gravity = Gravity.CENTER
-                    polygonView!!.layoutParams = layoutParams
+                    polygon_view.layoutParams = layoutParams
                     TransitionManager.beginDelayedTransition(container_scan)
                     crop_layout.visibility = View.VISIBLE
-                    cropImageView!!.setImageBitmap(copyBitmap)
-                    cropImageView!!.scaleType = ImageView.ScaleType.FIT_XY
+                    crop_image_view.setImageBitmap(copyBitmap)
+                    crop_image_view.scaleType = ImageView.ScaleType.FIT_XY
                 } catch (e: Exception) {
                     Timber.e(e)
                 }
@@ -199,7 +186,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     }
 
     override fun onClick(view: View) {
-        val points = polygonView!!.points
+        val points = polygon_view.points
         val croppedBitmap: Bitmap?
         croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
             val point1 = Point(points[0]!!.x.toDouble(), points[0]!!.y.toDouble())
