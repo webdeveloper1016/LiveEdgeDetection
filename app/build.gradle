@@ -73,14 +73,16 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            def builtType = variant.buildType.name
-            def vName = variant.versionName
-            def vCode = variant.versionCode
-            // def flavor = variant.flavorName
-            def newName = "LiveEdgeDetection"
-            newName += "-${vName}-${vCode}-${builtType}.apk"
-            outputFileName = newName
-            println "$variant.name: newName is $newName"
+            if (variant.name == "release") {
+                def builtType = variant.buildType.name
+                def vName = variant.versionName
+                def vCode = variant.versionCode
+                // def flavor = variant.flavorName
+                def newName = "LiveEdgeDetection"
+                newName += "-${vName}-${vCode}-${builtType}.apk"
+                outputFileName = newName
+            }
+            println "$variant.name: name is $outputFileName"
         }
     }
 
