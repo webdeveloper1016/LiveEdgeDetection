@@ -82,12 +82,10 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     private fun onRequestCamera(grantResults: IntArray) {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Handler().postDelayed({
-                runOnUiThread {
-                    imageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity)
-                    camera_preview.addView(imageSurfaceView)
-                }
-            }, 500)
+            Handler().post {
+                imageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity)
+                camera_preview.addView(imageSurfaceView)
+            }
         } else {
             Toast.makeText(this, getString(R.string.permission_denied_camera_toast), Toast.LENGTH_SHORT).show()
             finish()

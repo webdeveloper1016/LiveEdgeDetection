@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                         scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
 
                         Toast.makeText(this, filePath, Toast.LENGTH_LONG).show()
-                        Timber.d(filePath)
+                        Timber.i(filePath)
                     }
 
                 }
