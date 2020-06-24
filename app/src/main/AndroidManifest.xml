@@ -23,7 +23,7 @@
         <activity android:name=".MainActivity" />
 
         <activity
-            android:name="info.hannes.logcat.crashlytic.BothLogActivity"
+            android:name="info.hannes.logcat.BothLogActivity"
             android:label="Log LiveEdge"
             android:theme="@style/DetailTheme"
             tools:replace="android:label" />
