@@ -35,7 +35,7 @@ import java.util.*
  */
 class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     private var imageSurfaceView: ScanSurfaceView? = null
-    private var isPermissionNotGranted = false
+    private var isCameraPermissionGranted = true
     private var copyBitmap: Bitmap? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,34 +56,32 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     private fun checkCameraPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            isPermissionNotGranted = true
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.CAMERA)) {
+            isCameraPermissionGranted = false
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
                 Toast.makeText(this, "Enable camera permission from settings", Toast.LENGTH_SHORT).show()
             } else {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
-                        MY_PERMISSIONS_REQUEST_CAMERA)
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), PERMISSIONS_REQUEST_CAMERA)
             }
         } else {
-            if (!isPermissionNotGranted) {
+            if (isCameraPermissionGranted) {
                 imageSurfaceView = ScanSurfaceView(this@ScanActivity, this)
                 camera_preview.addView(imageSurfaceView)
             } else {
-                isPermissionNotGranted = false
+                isCameraPermissionGranted = true
             }
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            MY_PERMISSIONS_REQUEST_CAMERA -> onRequestCamera(grantResults)
+            PERMISSIONS_REQUEST_CAMERA -> onRequestCamera(grantResults)
             else -> {
             }
         }
     }
 
     private fun onRequestCamera(grantResults: IntArray) {
-        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Handler().postDelayed({
                 runOnUiThread {
                     imageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity)
@@ -91,7 +89,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
                 }
             }, 500)
         } else {
-            Toast.makeText(this, getString(R.string.camera_activity_permission_denied_toast), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.permission_denied_camera_toast), Toast.LENGTH_SHORT).show()
             finish()
         }
     }
@@ -174,7 +172,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     }
 
     companion object {
-        private const val MY_PERMISSIONS_REQUEST_CAMERA = 101
+        private const val PERMISSIONS_REQUEST_CAMERA = 101
         private const val mOpenCvLibrary = "opencv_java4"
 
         @JvmField

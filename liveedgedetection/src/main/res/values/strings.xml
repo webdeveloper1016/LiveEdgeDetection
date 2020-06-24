@@ -1,5 +1,6 @@
-<resources>
-    <string name="camera_activity_permission_denied_toast">Please go to app settings and grant camera permission</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="permission_denied_camera_toast">Please go to app settings and grant camera permission</string>
+    <string name="permission_denied_external_storage_toast" tools:ignore="MissingTranslation">Please go to app settings and grant external storage permission</string>
 
     <string name="finding_rect">Use darker background</string>
     <string name="move_away">Move away</string>
