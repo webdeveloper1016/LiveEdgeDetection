@@ -99,23 +99,23 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         when (scanHint) {
             ScanHint.MOVE_CLOSER -> {
                 capture_hint_text.text = resources.getString(R.string.move_closer)
-                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_red)
+                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
             }
             ScanHint.MOVE_AWAY -> {
                 capture_hint_text.text = resources.getString(R.string.move_away)
-                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_red)
+                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
             }
             ScanHint.ADJUST_ANGLE -> {
                 capture_hint_text.text = resources.getString(R.string.adjust_angle)
-                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_red)
+                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
             }
             ScanHint.FIND_RECT -> {
                 capture_hint_text.text = resources.getString(R.string.finding_rect)
-                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_white)
+                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_white)
             }
             ScanHint.CAPTURING_IMAGE -> {
                 capture_hint_text.text = resources.getString(R.string.hold_still)
-                capture_hint_layout.background = resources.getDrawable(R.drawable.hint_green)
+                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_green)
             }
             ScanHint.NO_MESSAGE -> capture_hint_layout.visibility = View.GONE
         }
