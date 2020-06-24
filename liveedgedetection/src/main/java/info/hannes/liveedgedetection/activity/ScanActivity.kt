@@ -173,13 +173,12 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     companion object {
         private const val PERMISSIONS_REQUEST_CAMERA = 101
-        private const val mOpenCvLibrary = "opencv_java4"
+        private const val openCvLibrary = "opencv_java4"
 
-        @JvmField
         val allDraggedPointsStack = Stack<PolygonPoints>()
 
         init {
-            System.loadLibrary(mOpenCvLibrary)
+            System.loadLibrary(openCvLibrary)
         }
     }
 
@@ -187,10 +186,10 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         val points = polygon_view.points
         val croppedBitmap: Bitmap?
         croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
-            val point1 = Point(points[0]!!.x.toDouble(), points[0]!!.y.toDouble())
-            val point2 = Point(points[1]!!.x.toDouble(), points[1]!!.y.toDouble())
-            val point3 = Point(points[2]!!.x.toDouble(), points[2]!!.y.toDouble())
-            val point4 = Point(points[3]!!.x.toDouble(), points[3]!!.y.toDouble())
+            val point1 = Point(points.getValue(0).x.toDouble(), points.getValue(0).y.toDouble())
+            val point2 = Point(points.getValue(1).x.toDouble(), points.getValue(1).y.toDouble())
+            val point3 = Point(points.getValue(2).x.toDouble(), points.getValue(2).y.toDouble())
+            val point4 = Point(points.getValue(3).x.toDouble(), points.getValue(3).y.toDouble())
             ScanUtils.enhanceReceipt(copyBitmap, point1, point2, point3, point4)
         } else {
             copyBitmap
