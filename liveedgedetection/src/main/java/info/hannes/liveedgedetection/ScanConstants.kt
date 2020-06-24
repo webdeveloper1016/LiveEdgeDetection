@@ -5,7 +5,7 @@ package info.hannes.liveedgedetection
  */
 object ScanConstants {
     const val SCANNED_RESULT = "scannedResult"
-    const val IMAGE_NAME = "image_name"
+    const val IMAGE_NAME = "scan"
     const val IMAGE_PATH = "image_path"
     internal const val INTERNAL_IMAGE_DIR = "imageDir"
     const val HIGHER_SAMPLING_THRESHOLD = 2200

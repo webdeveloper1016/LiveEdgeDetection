@@ -10,6 +10,22 @@ import java.io.FileOutputStream
 
 object FileUtils {
 
+    fun saveToExternalMemory(bitmap: Bitmap, fileDirectory: String, fileName: String, context: Context, quality: Int): Array<String?> {
+        val returnParams = arrayOfNulls<String>(2)
+        val path = File(fileDirectory, fileName)
+        try {
+            val fileOutputStream = FileOutputStream(path)
+            //Compress method used on the Bitmap object to write  image to output stream
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream)
+            fileOutputStream.close()
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+        returnParams[0] = File(fileDirectory).absolutePath
+        returnParams[1] = fileName
+        return returnParams
+    }
+
     fun saveToInternalMemory(bitmap: Bitmap, fileDirectory: String, fileName: String, context: Context, quality: Int): Array<String?> {
         val returnParams = arrayOfNulls<String>(2)
         val directory = getBaseDirectoryFromPathString(fileDirectory, context)
@@ -28,15 +44,14 @@ object FileUtils {
     }
 
     private fun getBaseDirectoryFromPathString(mPath: String, context: Context): File {
-        val contextWrapper = ContextWrapper(context)
-        return contextWrapper.getDir(mPath, Context.MODE_PRIVATE)
+        return ContextWrapper(context).getDir(mPath, Context.MODE_PRIVATE)
     }
 
-    fun decodeBitmapFromFile(path: String, imageName: String): Bitmap {
+    fun decodeBitmapFromFile(filename: String, imageName: String): Bitmap {
         // First decode with inJustDecodeBounds=true to check dimensions
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
-        return BitmapFactory.decodeFile(File(path, imageName).absolutePath, options)
+        return BitmapFactory.decodeFile(filename, options)
     }
 
     fun decodeBitmapFromByteArray(data: ByteArray, reqWidth: Int, reqHeight: Int): Bitmap {
@@ -67,10 +82,7 @@ object FileUtils {
         return BitmapFactory.decodeByteArray(data, 0, data.size, options)
     }
 
-    @Deprecated("")
     fun loadEfficientBitmap(data: ByteArray, width: Int, height: Int): Bitmap {
-        val bmp: Bitmap
-
         // First decode with inJustDecodeBounds=true to check dimensions
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
@@ -81,8 +93,7 @@ object FileUtils {
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false
-        bmp = BitmapFactory.decodeByteArray(data, 0, data.size, options)
-        return bmp
+        return BitmapFactory.decodeByteArray(data, 0, data.size, options)
     }
 
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
