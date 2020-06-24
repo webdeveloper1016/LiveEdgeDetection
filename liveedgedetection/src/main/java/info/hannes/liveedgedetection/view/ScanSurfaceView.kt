@@ -307,7 +307,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         matrix.postRotate(90f)
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
         iScanner.onPictureClicked(bitmap)
-        postDelayed({ isCapturing = false }, 1500)
+        postDelayed({ isCapturing = false }, 3000)
     }
     private val mShutterCallBack = ShutterCallback {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager

@@ -1,6 +1,7 @@
 package info.hannes.liveedgedetection.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -28,6 +29,8 @@ import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 import timber.log.Timber
+import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -36,15 +39,14 @@ import java.util.*
 class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     private var imageSurfaceView: ScanSurfaceView? = null
     private var isCameraPermissionGranted = true
+    private var isExternalStorageStatsPermissionGranted = true
     private var copyBitmap: Bitmap? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        init()
-    }
 
-    private fun init() {
         crop_accept_btn.setOnClickListener(this)
         crop_reject_btn.setOnClickListener {
             TransitionManager.beginDelayedTransition(container_scan)
@@ -52,6 +54,8 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
             imageSurfaceView?.setPreviewCallback()
         }
         checkCameraPermissions()
+        if (intent.hasExtra(ScanConstants.IMAGE_PATH))
+            checkExternalStoragePermissions()
     }
 
     private fun checkCameraPermissions() {
@@ -72,9 +76,25 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         }
     }
 
+    private fun checkExternalStoragePermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            isExternalStorageStatsPermissionGranted = false
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Toast.makeText(this, "Enable external storage permission", Toast.LENGTH_SHORT).show()
+            } else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), PERMISSIONS_REQUEST_EXTERNAL_STORAGE)
+            }
+        } else {
+            if (!isExternalStorageStatsPermissionGranted) {
+                isExternalStorageStatsPermissionGranted = true
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             PERMISSIONS_REQUEST_CAMERA -> onRequestCamera(grantResults)
+            PERMISSIONS_REQUEST_EXTERNAL_STORAGE -> onRequestExternalStorage(grantResults)
             else -> {
             }
         }
@@ -89,6 +109,12 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         } else {
             Toast.makeText(this, getString(R.string.permission_denied_camera_toast), Toast.LENGTH_SHORT).show()
             finish()
+        }
+    }
+
+    private fun onRequestExternalStorage(grantResults: IntArray) {
+        if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, getString(R.string.permission_denied_external_storage_toast), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -171,6 +197,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     companion object {
         private const val PERMISSIONS_REQUEST_CAMERA = 101
+        private const val PERMISSIONS_REQUEST_EXTERNAL_STORAGE = 102
         private const val openCvLibrary = "opencv_java4"
 
         val allDraggedPointsStack = Stack<PolygonPoints>()
@@ -180,6 +207,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onClick(view: View) {
         val points = polygon_view.points
         val croppedBitmap: Bitmap?
@@ -192,9 +220,15 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         } else {
             copyBitmap
         }
-        croppedBitmap?.let {
-            val path = FileUtils.saveToInternalMemory(it, ScanConstants.INTERNAL_IMAGE_DIR, ScanConstants.IMAGE_NAME, this@ScanActivity, 90)[0]
-            setResult(Activity.RESULT_OK, Intent().putExtra(ScanConstants.SCANNED_RESULT, path))
+        croppedBitmap?.let { bitmap ->
+            val imageName = ScanConstants.IMAGE_NAME + SimpleDateFormat("-yyyy-MM-dd_HHmmss").format(Date()) + ".png"
+            var path: String? = null
+            intent.getStringExtra(ScanConstants.IMAGE_PATH)?.let {
+                path = FileUtils.saveToExternalMemory(bitmap, it, imageName, this@ScanActivity, 90)[0]
+            } ?: run {
+                path = FileUtils.saveToInternalMemory(bitmap, ScanConstants.INTERNAL_IMAGE_DIR, imageName, this@ScanActivity, 90)[0]
+            }
+            setResult(Activity.RESULT_OK, Intent().putExtra(ScanConstants.SCANNED_RESULT, path + File.separator + imageName))
         }
         //bitmap.recycle();
         System.gc()
