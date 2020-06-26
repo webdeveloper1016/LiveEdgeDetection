@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ScanActivity::class.java)
         // optional, otherwise it's stored internal
         intent.putExtra(ScanConstants.IMAGE_PATH, getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString())
+        intent.putExtra(ScanConstants.TIME_HOLD_STILL, 700L)
         startActivityForResult(intent, REQUEST_CODE)
     }
 

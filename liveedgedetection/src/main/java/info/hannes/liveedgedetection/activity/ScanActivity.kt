@@ -42,9 +42,12 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     private var isCameraPermissionGranted = true
     private var isExternalStorageStatsPermissionGranted = true
     private var copyBitmap: Bitmap? = null
+    private var timeHoldStill: Long = ScanSurfaceView.DEFAULT_TIME_POST_PICTURE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        timeHoldStill = intent.getLongExtra(ScanConstants.TIME_HOLD_STILL, ScanSurfaceView.DEFAULT_TIME_POST_PICTURE)
         setContentView(R.layout.activity_scan)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -69,7 +72,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
             }
         } else {
             if (isCameraPermissionGranted) {
-                imageSurfaceView = ScanSurfaceView(this@ScanActivity, this)
+                imageSurfaceView = ScanSurfaceView(this@ScanActivity, this, timeHoldStill)
                 camera_preview.addView(imageSurfaceView)
             } else {
                 isCameraPermissionGranted = true
@@ -104,7 +107,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     private fun onRequestCamera(grantResults: IntArray) {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Handler().post {
-                imageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity)
+                imageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity, timeHoldStill)
                 camera_preview.addView(imageSurfaceView)
             }
         } else {
