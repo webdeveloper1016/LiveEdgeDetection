@@ -19,6 +19,7 @@ import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import timber.log.Timber
 import java.io.IOException
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
@@ -154,8 +155,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         // ATTENTION: axis are swapped
         val previewWidth = stdSize.height.toFloat()
         val previewHeight = stdSize.width.toFloat()
-        Timber.i("previewWidth: %s", previewWidth)
-        Timber.i("previewHeight: %s", previewHeight)
+        Timber.i("previewWidth=$previewWidth previewHeight=$previewHeight")
 
         //Points are drawn in anticlockwise direction
         path.moveTo(previewWidth - points[0].y.toFloat(), points[0].x.toFloat())
@@ -163,8 +163,8 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         path.lineTo(previewWidth - points[2].y.toFloat(), points[2].x.toFloat())
         path.lineTo(previewWidth - points[3].y.toFloat(), points[3].x.toFloat())
         path.close()
-        val area = Math.abs(Imgproc.contourArea(approx))
-        Timber.i("Contour Area: %s", area)
+        val area = abs(Imgproc.contourArea(approx))
+        Timber.i("Contour Area=$area")
         val newBox = PathShape(path, previewWidth, previewHeight)
         val paint = Paint()
         val border = Paint()
@@ -178,8 +178,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         var resultWidth = points[3].y - points[0].y
         val bottomWidth = points[2].y - points[1].y
         if (bottomWidth > resultWidth) resultWidth = bottomWidth
-        Timber.i("resultWidth: $resultWidth")
-        Timber.i("resultHeight: $resultHeight")
+        Timber.i("resultWidth=$resultWidth resultHeight=$resultHeight")
         val imgDetectionPropsObj = ImageDetectionProperties(previewWidth.toDouble(), previewHeight.toDouble(), resultWidth, resultHeight,
                 previewArea.toDouble(), area, points[0], points[1], points[2], points[3])
         val scanHint: ScanHint
