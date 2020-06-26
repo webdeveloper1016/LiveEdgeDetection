@@ -10,8 +10,7 @@ import java.io.FileOutputStream
 
 object FileUtils {
 
-    fun saveToExternalMemory(bitmap: Bitmap, fileDirectory: String, fileName: String, context: Context, quality: Int): Array<String?> {
-        val returnParams = arrayOfNulls<String>(2)
+    fun saveToExternalMemory(bitmap: Bitmap, fileDirectory: String, fileName: String, context: Context, quality: Int): Pair<String, String> {
         val path = File(fileDirectory, fileName)
         try {
             val fileOutputStream = FileOutputStream(path)
@@ -21,13 +20,10 @@ object FileUtils {
         } catch (e: Exception) {
             Timber.e(e)
         }
-        returnParams[0] = File(fileDirectory).absolutePath
-        returnParams[1] = fileName
-        return returnParams
+        return Pair(File(fileDirectory).absolutePath, fileName)
     }
 
-    fun saveToInternalMemory(bitmap: Bitmap, fileDirectory: String, fileName: String, context: Context, quality: Int): Array<String?> {
-        val returnParams = arrayOfNulls<String>(2)
+    fun saveToInternalMemory(bitmap: Bitmap, fileDirectory: String, fileName: String, context: Context, quality: Int): Pair<String, String> {
         val directory = getBaseDirectoryFromPathString(fileDirectory, context)
         val path = File(directory, fileName)
         try {
@@ -38,9 +34,7 @@ object FileUtils {
         } catch (e: Exception) {
             Timber.e(e)
         }
-        returnParams[0] = directory.absolutePath
-        returnParams[1] = fileName
-        return returnParams
+        return Pair(directory.absolutePath, fileName)
     }
 
     private fun getBaseDirectoryFromPathString(mPath: String, context: Context): File {

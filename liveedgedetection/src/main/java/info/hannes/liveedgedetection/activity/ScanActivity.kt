@@ -32,6 +32,7 @@ import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 /**
  * This class initiates camera and detects edges on live view
@@ -150,16 +151,16 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
             copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
             val height = window.findViewById<View>(Window.ID_ANDROID_CONTENT).height
             val width = window.findViewById<View>(Window.ID_ANDROID_CONTENT).width
-            copyBitmap = ScanUtils.resizeToScreenContentSize(copyBitmap, width, height)
+            copyBitmap = copyBitmap?.resizeToScreenContentSize(width, height)
             copyBitmap?.let {
-                val originalMat = Mat(it.getHeight(), it.getWidth(), CvType.CV_8UC1)
+                val originalMat = Mat(it.height, it.width, CvType.CV_8UC1)
                 Utils.bitmapToMat(copyBitmap, originalMat)
                 val points: ArrayList<PointF>
                 val pointFs: MutableMap<Int, PointF> = HashMap()
                 try {
                     val quad = ScanUtils.detectLargestQuadrilateral(originalMat)
                     if (null != quad) {
-                        val resultArea = Math.abs(Imgproc.contourArea(quad.contour))
+                        val resultArea = abs(Imgproc.contourArea(quad.contour))
                         val previewArea = originalMat.rows() * originalMat.cols().toDouble()
                         if (resultArea > previewArea * 0.08) {
                             points = ArrayList()
@@ -168,10 +169,10 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
                             points.add(PointF(quad.points[3].x.toFloat(), quad.points[3].y.toFloat()))
                             points.add(PointF(quad.points[2].x.toFloat(), quad.points[2].y.toFloat()))
                         } else {
-                            points = ScanUtils.getPolygonDefaultPoints(copyBitmap)
+                            points = it.getPolygonDefaultPoints()
                         }
                     } else {
-                        points = ScanUtils.getPolygonDefaultPoints(copyBitmap)
+                        points = it.getPolygonDefaultPoints()
                     }
                     var index = -1
                     for (pointF in points) {
@@ -179,7 +180,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
                     }
                     polygon_view.points = pointFs
                     val padding = resources.getDimension(R.dimen.scan_padding).toInt()
-                    val layoutParams = FrameLayout.LayoutParams(it.getWidth() + 2 * padding, it.getHeight() + 2 * padding)
+                    val layoutParams = FrameLayout.LayoutParams(it.width + 2 * padding, it.height + 2 * padding)
                     layoutParams.gravity = Gravity.CENTER
                     polygon_view.layoutParams = layoutParams
                     TransitionManager.beginDelayedTransition(container_scan)
@@ -195,6 +196,34 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
+    override fun onClick(view: View) {
+        val points = polygon_view.points
+        val croppedBitmap: Bitmap?
+        croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
+            val point1 = Point(points.getValue(0).x.toDouble(), points.getValue(0).y.toDouble())
+            val point2 = Point(points.getValue(1).x.toDouble(), points.getValue(1).y.toDouble())
+            val point3 = Point(points.getValue(2).x.toDouble(), points.getValue(2).y.toDouble())
+            val point4 = Point(points.getValue(3).x.toDouble(), points.getValue(3).y.toDouble())
+            copyBitmap?.enhanceReceipt(point1, point2, point3, point4)
+        } else {
+            copyBitmap
+        }
+        croppedBitmap?.let { bitmap ->
+            val imageName = ScanConstants.IMAGE_NAME + SimpleDateFormat("-yyyy-MM-dd_HHmmss").format(Date()) + ".png"
+            var path: String? = null
+            intent.getStringExtra(ScanConstants.IMAGE_PATH)?.let {
+                path = FileUtils.saveToExternalMemory(bitmap, it, imageName, this@ScanActivity, 90).first
+            } ?: run {
+                path = FileUtils.saveToInternalMemory(bitmap, ScanConstants.INTERNAL_IMAGE_DIR, imageName, this@ScanActivity, 90).first
+            }
+            setResult(Activity.RESULT_OK, Intent().putExtra(ScanConstants.SCANNED_RESULT, path + File.separator + imageName))
+        }
+        //bitmap.recycle();
+        System.gc()
+        finish()
+    }
+
     companion object {
         private const val PERMISSIONS_REQUEST_CAMERA = 101
         private const val PERMISSIONS_REQUEST_EXTERNAL_STORAGE = 102
@@ -205,33 +234,5 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         init {
             System.loadLibrary(openCvLibrary)
         }
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    override fun onClick(view: View) {
-        val points = polygon_view.points
-        val croppedBitmap: Bitmap?
-        croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
-            val point1 = Point(points.getValue(0).x.toDouble(), points.getValue(0).y.toDouble())
-            val point2 = Point(points.getValue(1).x.toDouble(), points.getValue(1).y.toDouble())
-            val point3 = Point(points.getValue(2).x.toDouble(), points.getValue(2).y.toDouble())
-            val point4 = Point(points.getValue(3).x.toDouble(), points.getValue(3).y.toDouble())
-            ScanUtils.enhanceReceipt(copyBitmap, point1, point2, point3, point4)
-        } else {
-            copyBitmap
-        }
-        croppedBitmap?.let { bitmap ->
-            val imageName = ScanConstants.IMAGE_NAME + SimpleDateFormat("-yyyy-MM-dd_HHmmss").format(Date()) + ".png"
-            var path: String? = null
-            intent.getStringExtra(ScanConstants.IMAGE_PATH)?.let {
-                path = FileUtils.saveToExternalMemory(bitmap, it, imageName, this@ScanActivity, 90)[0]
-            } ?: run {
-                path = FileUtils.saveToInternalMemory(bitmap, ScanConstants.INTERNAL_IMAGE_DIR, imageName, this@ScanActivity, 90)[0]
-            }
-            setResult(Activity.RESULT_OK, Intent().putExtra(ScanConstants.SCANNED_RESULT, path + File.separator + imageName))
-        }
-        //bitmap.recycle();
-        System.gc()
-        finish()
     }
 }

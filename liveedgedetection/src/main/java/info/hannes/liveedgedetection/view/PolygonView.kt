@@ -14,8 +14,8 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import info.hannes.liveedgedetection.PolygonPoints
 import info.hannes.liveedgedetection.R
-import info.hannes.liveedgedetection.ScanUtils
 import info.hannes.liveedgedetection.activity.ScanActivity
+import info.hannes.liveedgedetection.dp2px
 import timber.log.Timber
 import java.util.*
 
@@ -194,7 +194,7 @@ class PolygonView : FrameLayout {
         midPointer34!!.y = pointer4!!.y - (pointer4!!.y - pointer3!!.y) / 2
         midPointer12!!.x = pointer2!!.x - (pointer2!!.x - pointer1!!.x) / 2
         midPointer12!!.y = pointer2!!.y - (pointer2!!.y - pointer1!!.y) / 2
-        val radius = ScanUtils.dp2px(context, 11f)
+        val radius = context.dp2px(11f)
         canvas.drawCircle(pointer1!!.x + pointer1!!.width / 2, pointer1!!.y + pointer1!!.height / 2, radius.toFloat(), circleFillPaint!!)
         canvas.drawCircle(pointer2!!.x + pointer2!!.width / 2, pointer2!!.y + pointer2!!.height / 2, radius.toFloat(), circleFillPaint!!)
         canvas.drawCircle(pointer3!!.x + pointer3!!.width / 2, pointer3!!.y + pointer3!!.height / 2, radius.toFloat(), circleFillPaint!!)
@@ -291,7 +291,7 @@ class PolygonView : FrameLayout {
                         if (mainPointer1.y + mv.y + v.height < polygonView!!.height && mainPointer1.y + mv.y > 0) {
                             v.setX((StartPT.y + mv.y))
                             StartPT = PointF(v.x, v.y)
-                            mainPointer1.setY((mainPointer1.y + mv.y) )
+                            mainPointer1.setY((mainPointer1.y + mv.y))
                         }
                     } else {
                         if (mainPointer2.x + mv.x + v.width < polygonView!!.width && mainPointer2.x + mv.x > 0) {
