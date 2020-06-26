@@ -83,7 +83,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         if (previewSize == null)
             previewSize = ScanUtils.getOptimalPreviewSize(camera, vWidth, vHeight)
         val parameters = camera!!.parameters
-        camera!!.setDisplayOrientation(ScanUtils.configureCameraAngle(context as Activity?))
+        camera!!.setDisplayOrientation((context as Activity).configureCameraAngle())
         parameters.setPreviewSize(previewSize!!.width, previewSize!!.height)
         if (parameters.supportedFocusModes != null
                 && parameters.supportedFocusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
@@ -332,7 +332,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
             if (previewSize != null) {
                 previewWidth = previewSize!!.width
                 previewHeight = previewSize!!.height
-                val displayOrientation = ScanUtils.configureCameraAngle(context as Activity?)
+                val displayOrientation = (context as Activity).configureCameraAngle()
                 if (displayOrientation == 90 || displayOrientation == 270) {
                     previewWidth = previewSize!!.height
                     previewHeight = previewSize!!.width

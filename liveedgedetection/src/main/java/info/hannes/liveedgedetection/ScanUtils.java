@@ -1,17 +1,8 @@
 package info.hannes.liveedgedetection;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.hardware.Camera;
-import android.util.TypedValue;
-import android.view.Display;
-import android.view.Surface;
 
-import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -22,7 +13,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.utils.Converters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,30 +87,6 @@ public class ScanUtils {
 
         return previewSizeList.get(0);
     }
-
-    public static int configureCameraAngle(Activity activity) {
-        int cameraOrientationAngle;
-
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        switch (display.getRotation()) {
-            case Surface.ROTATION_90:
-                cameraOrientationAngle = 0;
-                break;
-            case Surface.ROTATION_180:
-                cameraOrientationAngle = 270;
-                break;
-            case Surface.ROTATION_270:
-                cameraOrientationAngle = 180;
-                break;
-            case Surface.ROTATION_0:
-            default:
-                cameraOrientationAngle = 90;
-                break;
-        }
-
-        return cameraOrientationAngle;
-    }
-
 
     public static double getMaxCosine(double maxCosine, Point[] approxPoints) {
         for (int i = 2; i < 5; i++) {
@@ -268,147 +234,6 @@ public class ScanUtils {
             }
         }
         return null;
-    }
-
-    public static Bitmap enhanceReceipt(Bitmap image, Point topLeft, Point topRight, Point bottomLeft, Point bottomRight) {
-        int resultWidth = (int) (topRight.x - topLeft.x);
-        int bottomWidth = (int) (bottomRight.x - bottomLeft.x);
-        if (bottomWidth > resultWidth)
-            resultWidth = bottomWidth;
-
-        int resultHeight = (int) (bottomLeft.y - topLeft.y);
-        int bottomHeight = (int) (bottomRight.y - topRight.y);
-        if (bottomHeight > resultHeight)
-            resultHeight = bottomHeight;
-
-        Mat inputMat = new Mat(image.getHeight(), image.getHeight(), CvType.CV_8UC1);
-        Utils.bitmapToMat(image, inputMat);
-        Mat outputMat = new Mat(resultWidth, resultHeight, CvType.CV_8UC1);
-
-        List<Point> source = new ArrayList<>();
-        source.add(topLeft);
-        source.add(topRight);
-        source.add(bottomLeft);
-        source.add(bottomRight);
-        Mat startM = Converters.vector_Point2f_to_Mat(source);
-
-        Point ocvPOut1 = new Point(0, 0);
-        Point ocvPOut2 = new Point(resultWidth, 0);
-        Point ocvPOut3 = new Point(0, resultHeight);
-        Point ocvPOut4 = new Point(resultWidth, resultHeight);
-        List<Point> dest = new ArrayList<>();
-        dest.add(ocvPOut1);
-        dest.add(ocvPOut2);
-        dest.add(ocvPOut3);
-        dest.add(ocvPOut4);
-        Mat endM = Converters.vector_Point2f_to_Mat(dest);
-
-        Mat perspectiveTransform = Imgproc.getPerspectiveTransform(startM, endM);
-
-        Imgproc.warpPerspective(inputMat, outputMat, perspectiveTransform, new Size(resultWidth, resultHeight));
-
-        Bitmap output = Bitmap.createBitmap(resultWidth, resultHeight, Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(outputMat, output);
-        return output;
-    }
-
-    /*
-     * This method converts the dp value to px
-     * @param context context
-     * @param dp value in dp
-     * @return px value
-     */
-    public static int dp2px(Context context, float dp) {
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-        return Math.round(px);
-    }
-
-    @Deprecated
-    public static Bitmap loadEfficientBitmap(byte[] data, int width, int height) {
-        Bitmap bmp;
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeByteArray(data, 0, data.length, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, width, height);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        bmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
-        return bmp;
-    }
-
-    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
-        if (maxHeight > 0 && maxWidth > 0) {
-            int width = image.getWidth();
-            int height = image.getHeight();
-            float ratioBitmap = (float) width / (float) height;
-            float ratioMax = (float) maxWidth / (float) maxHeight;
-
-            int finalWidth = maxWidth;
-            int finalHeight = maxHeight;
-            if (ratioMax > 1) {
-                finalWidth = (int) ((float) maxHeight * ratioBitmap);
-            } else {
-                finalHeight = (int) ((float) maxWidth / ratioBitmap);
-            }
-
-            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
-            return image;
-        } else {
-            return image;
-        }
-    }
-
-    public static Bitmap resizeToScreenContentSize(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-
-    public static ArrayList<PointF> getPolygonDefaultPoints(Bitmap bitmap) {
-        ArrayList<PointF> points;
-        points = new ArrayList<>();
-        points.add(new PointF(bitmap.getWidth() * (0.14f), (float) bitmap.getHeight() * (0.13f)));
-        points.add(new PointF(bitmap.getWidth() * (0.84f), (float) bitmap.getHeight() * (0.13f)));
-        points.add(new PointF(bitmap.getWidth() * (0.14f), (float) bitmap.getHeight() * (0.83f)));
-        points.add(new PointF(bitmap.getWidth() * (0.84f), (float) bitmap.getHeight() * (0.83f)));
-        return points;
     }
 
     public static boolean isScanPointsValid(Map<Integer, PointF> points) {
