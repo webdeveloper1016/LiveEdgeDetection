@@ -86,7 +86,7 @@ public class ScanUtils {
                 double ratio1 = (double) size1.width / size1.height;
                 double ratio2 = (double) size2.width / size2.height;
                 Double ratioDiff1 = Math.abs(ratio1 - targetRatio);
-                Double ratioDiff2 = Math.abs(ratio2 - targetRatio);
+                double ratioDiff2 = Math.abs(ratio2 - targetRatio);
                 if (ScanUtils.compareFloats(ratioDiff1, ratioDiff2)) {
                     Double h1 = Math.sqrt(size1.width * size1.width + size1.height * size1.height);
                     Double h2 = Math.sqrt(size2.width * size2.width + size2.height * size2.height);
@@ -241,28 +241,26 @@ public class ScanUtils {
 
 
     public static int configureCameraAngle(Activity activity) {
-        int angle;
+        int cameraOrientationAngle;
 
         Display display = activity.getWindowManager().getDefaultDisplay();
         switch (display.getRotation()) {
-            case Surface.ROTATION_0: // This is display orientation
-                angle = 90; // This is camera orientation
-                break;
             case Surface.ROTATION_90:
-                angle = 0;
+                cameraOrientationAngle = 0;
                 break;
             case Surface.ROTATION_180:
-                angle = 270;
+                cameraOrientationAngle = 270;
                 break;
             case Surface.ROTATION_270:
-                angle = 180;
+                cameraOrientationAngle = 180;
                 break;
+            case Surface.ROTATION_0:
             default:
-                angle = 90;
+                cameraOrientationAngle = 90;
                 break;
         }
 
-        return angle;
+        return cameraOrientationAngle;
     }
 
 
