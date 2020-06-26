@@ -20,12 +20,11 @@ import org.opencv.imgproc.Imgproc
 import timber.log.Timber
 import java.io.IOException
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 /**
  * This class previews the live images from the camera
  */
-class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(context), SurfaceHolder.Callback {
+class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL : Long = DEFAULT_TIME_POST_PICTURE) : FrameLayout(context), SurfaceHolder.Callback {
 
     private var surfaceView: SurfaceView = SurfaceView(context)
     private val scanCanvasView: ScanCanvasView
@@ -34,7 +33,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
     private var camera: Camera? = null
     private val iScanner: IScanner
     private var autoCaptureTimer: CountDownTimer? = null
-    private var secondsLeft = 0
+    private var millisLeft = 0L
     private var isAutoCaptureScheduled = false
     private var previewSize: Camera.Size? = null
     private var isCapturing = false
@@ -225,39 +224,37 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
 
     private fun scheduleAutoCapture(scanHint: ScanHint) {
         isAutoCaptureScheduled = true
-        secondsLeft = 0
-        autoCaptureTimer = object : CountDownTimer(2000, 100) {
+        millisLeft = 0L
+        autoCaptureTimer = object : CountDownTimer(TIME_HOLD_STILL, 100) {
             override fun onTick(millisUntilFinished: Long) {
-                if ((millisUntilFinished.toFloat() / 1000.0f).roundToInt() != secondsLeft) {
-                    secondsLeft = Math.round(millisUntilFinished.toFloat() / 1000.0f)
-                }
-                Timber.v("${millisUntilFinished / 1000}")
-                when (secondsLeft) {
-                    1 -> autoCapture(scanHint)
-                    else -> {
-                    }
+                if (millisUntilFinished != millisLeft) {
+                    millisLeft = millisUntilFinished
                 }
             }
 
             override fun onFinish() {
                 isAutoCaptureScheduled = false
+                autoCapture(scanHint)
+                Timber.v("$millisLeft")
             }
         }
         autoCaptureTimer?.start()
     }
 
     private fun autoCapture(scanHint: ScanHint) {
-        if (isCapturing) return
+        if (isCapturing)
+            return
+        cancelAutoCapture()
         if (ScanHint.CAPTURING_IMAGE == scanHint) {
             try {
                 isCapturing = true
                 iScanner.displayHint(ScanHint.CAPTURING_IMAGE)
                 camera!!.takePicture(mShutterCallBack, null, pictureCallback)
                 camera!!.setPreviewCallback(null)
-                //                iScanner.displayHint(ScanHint.NO_MESSAGE);
-//                clearAndInvalidateCanvas();
+                // iScanner.displayHint(ScanHint.NO_MESSAGE);
+                // clearAndInvalidateCanvas();
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e)
             }
         }
     }
@@ -265,7 +262,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
     private fun cancelAutoCapture() {
         if (isAutoCaptureScheduled) {
             isAutoCaptureScheduled = false
-            if (null != autoCaptureTimer) {
+            if (autoCaptureTimer != null) {
                 autoCaptureTimer!!.cancel()
             }
         }
@@ -306,7 +303,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         matrix.postRotate(90f)
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
         iScanner.onPictureClicked(bitmap)
-        postDelayed({ isCapturing = false }, 3000)
+        postDelayed({ isCapturing = false }, TIME_POST_PICTURE)
     }
     private val mShutterCallBack = ShutterCallback {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -373,5 +370,10 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         val surfaceHolder = surfaceView.holder
         surfaceHolder.addCallback(this)
         this.iScanner = iScanner
+    }
+
+    companion object {
+        private const val TIME_POST_PICTURE = 1900L
+        const val DEFAULT_TIME_POST_PICTURE = 2000L
     }
 }
