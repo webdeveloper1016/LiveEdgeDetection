@@ -229,7 +229,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner) : FrameLayout(contex
         autoCaptureTimer = object : CountDownTimer(2000, 100) {
             override fun onTick(millisUntilFinished: Long) {
                 if ((millisUntilFinished.toFloat() / 1000.0f).roundToInt() != secondsLeft) {
-                    secondsLeft = Math.round(millisUntilFinished.toFloat() / 1000.0f)
+                    secondsLeft = (millisUntilFinished.toFloat() / 1000.0f).roundToInt()
                 }
                 Timber.v("${millisUntilFinished / 1000}")
                 when (secondsLeft) {
