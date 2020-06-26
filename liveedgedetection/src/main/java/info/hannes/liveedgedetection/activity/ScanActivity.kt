@@ -224,9 +224,9 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
             val imageName = ScanConstants.IMAGE_NAME + SimpleDateFormat("-yyyy-MM-dd_HHmmss").format(Date()) + ".png"
             var path: String? = null
             intent.getStringExtra(ScanConstants.IMAGE_PATH)?.let {
-                path = FileUtils.saveToExternalMemory(bitmap, it, imageName, this@ScanActivity, 90)[0]
+                path = FileUtils.saveToExternalMemory(bitmap, it, imageName, this@ScanActivity, 90).first
             } ?: run {
-                path = FileUtils.saveToInternalMemory(bitmap, ScanConstants.INTERNAL_IMAGE_DIR, imageName, this@ScanActivity, 90)[0]
+                path = FileUtils.saveToInternalMemory(bitmap, ScanConstants.INTERNAL_IMAGE_DIR, imageName, this@ScanActivity, 90).first
             }
             setResult(Activity.RESULT_OK, Intent().putExtra(ScanConstants.SCANNED_RESULT, path + File.separator + imageName))
         }
