@@ -31,7 +31,7 @@ jobs:
         env:
           CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
       - name: Build project
-        run: ./gradlew clean build --stacktrace
+        run: ./gradlew assembleDebug --stacktrace
         env:
           CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
           KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
