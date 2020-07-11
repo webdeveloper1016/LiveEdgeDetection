@@ -13,6 +13,7 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.FrameLayout
 import info.hannes.liveedgedetection.*
+import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.core.Point
 import org.opencv.core.Size
@@ -21,10 +22,11 @@ import timber.log.Timber
 import java.io.IOException
 import kotlin.math.abs
 
+
 /**
  * This class previews the live images from the camera
  */
-class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL : Long = DEFAULT_TIME_POST_PICTURE) : FrameLayout(context), SurfaceHolder.Callback {
+class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL: Long = DEFAULT_TIME_POST_PICTURE) : FrameLayout(context), SurfaceHolder.Callback {
 
     private var surfaceView: SurfaceView = SurfaceView(context)
     private val scanCanvasView: ScanCanvasView
@@ -37,6 +39,16 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL 
     private var isAutoCaptureScheduled = false
     private var previewSize: Camera.Size? = null
     private var isCapturing = false
+
+    init {
+        addView(surfaceView)
+        scanCanvasView = ScanCanvasView(context)
+        addView(scanCanvasView)
+        val surfaceHolder = surfaceView.holder
+        surfaceHolder.addCallback(this)
+        this.iScanner = iScanner
+    }
+
     override fun surfaceCreated(holder: SurfaceHolder) {
         try {
             requestLayout()
@@ -151,7 +163,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL 
 
     private fun drawLargestRect(approx: MatOfPoint2f, points: Array<Point>, stdSize: Size, previewArea: Int) {
         val path = Path()
-        // ATTENTION: axis are swapped
+        // Attention: axis are swapped
         val previewWidth = stdSize.height.toFloat()
         val previewHeight = stdSize.width.toFloat()
         Timber.i("previewWidth=$previewWidth previewHeight=$previewHeight")
@@ -361,15 +373,6 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL 
             scanCanvasView.layout(left, top, nW, nH)
             Timber.d("left=$left top=$top bottom=$nH")
         }
-    }
-
-    init {
-        addView(surfaceView)
-        scanCanvasView = ScanCanvasView(context)
-        addView(scanCanvasView)
-        val surfaceHolder = surfaceView.holder
-        surfaceHolder.addCallback(this)
-        this.iScanner = iScanner
     }
 
     companion object {
