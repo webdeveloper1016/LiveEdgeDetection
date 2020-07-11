@@ -14,20 +14,20 @@ import java.util.*
 class ScanCanvasView : View {
     private val shapes = ArrayList<ScanShape>()
 
-    constructor(context: Context?) : super(context) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {}
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
-    inner class ScanShape(val shape: Shape, private val mPaint: Paint, private val mBorder: Paint?) {
+    inner class ScanShape(val shape: Shape, private val paint: Paint, private val border: Paint?) {
         fun draw(canvas: Canvas?) {
-            shape.draw(canvas, mPaint)
-            if (mBorder != null) {
-                shape.draw(canvas, mBorder)
+            shape.draw(canvas, paint)
+            border?.let {
+                shape.draw(canvas, it)
             }
         }
 
         init {
-            mBorder!!.style = Paint.Style.STROKE
+            border?.style = Paint.Style.STROKE
         }
     }
 
@@ -41,13 +41,13 @@ class ScanCanvasView : View {
         val paddingBottom = paddingBottom
         val contentWidth = width - paddingLeft - paddingRight
         val contentHeight = height - paddingTop - paddingBottom
-        for (shape in shapes) {
+        shapes.forEach { shape ->
             shape.shape.resize(contentWidth.toFloat(), contentHeight.toFloat())
             shape.draw(canvas)
         }
     }
 
-    fun addShape(shape: Shape, paint: Paint, border: Paint?) {
+    fun addShape(shape: Shape, paint: Paint, border: Paint) {
         val scanShape = ScanShape(shape, paint, border)
         shapes.add(scanShape)
     }
