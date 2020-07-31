@@ -35,7 +35,7 @@ jobs:
         env:
           CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
       - name: Build project
-        run: ./gradlew clean assembleRelease --stacktrace
+        run: ./gradlew clean assembleRelease
         env:
           TAG_VERSION: ${{ github.ref }}
           CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
