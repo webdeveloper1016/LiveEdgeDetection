@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         startScan()
 
         AppUpdateHelper.checkForNewVersion(
-                MainActivity@ this,
+                this,
                 BuildConfig.GIT_USER,
                 BuildConfig.GIT_REPOSITORY,
                 BuildConfig.VERSION_NAME
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 data?.extras?.let { bundle ->
                     val filePath = bundle.getString(ScanConstants.SCANNED_RESULT)
                     filePath?.let {
-                        val baseBitmap = FileUtils.decodeBitmapFromFile(it, ScanConstants.IMAGE_NAME)
+                        val baseBitmap = FileUtils.decodeBitmapFromFile(it)
                         scanned_image.setImageBitmap(baseBitmap)
                         scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
 

@@ -10,7 +10,7 @@ import java.io.FileOutputStream
 
 object FileUtils {
 
-    fun saveToExternalMemory(bitmap: Bitmap, fileDirectory: String, fileName: String, context: Context, quality: Int): Pair<String, String> {
+    fun saveToExternalMemory(bitmap: Bitmap, fileDirectory: String, fileName: String, quality: Int): Pair<String, String> {
         val path = File(fileDirectory, fileName)
         try {
             val fileOutputStream = FileOutputStream(path)
@@ -41,7 +41,7 @@ object FileUtils {
         return ContextWrapper(context).getDir(mPath, Context.MODE_PRIVATE)
     }
 
-    fun decodeBitmapFromFile(filename: String, imageName: String): Bitmap {
+    fun decodeBitmapFromFile(filename: String): Bitmap {
         // First decode with inJustDecodeBounds=true to check dimensions
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888

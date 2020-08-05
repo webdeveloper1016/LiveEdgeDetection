@@ -13,7 +13,6 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.FrameLayout
 import info.hannes.liveedgedetection.*
-import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.core.Point
 import org.opencv.core.Size
@@ -301,6 +300,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
                 paintColor = Color.argb(30, 38, 216, 76)
                 borderColor = Color.rgb(38, 216, 76)
             }
+            ScanHint.NO_MESSAGE -> Unit
         }
         paint.color = paintColor
         border.color = borderColor
