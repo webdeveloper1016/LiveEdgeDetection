@@ -5,7 +5,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.moka.utils.Screenshot
-import info.hannes.logcat.BothLogActivity
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

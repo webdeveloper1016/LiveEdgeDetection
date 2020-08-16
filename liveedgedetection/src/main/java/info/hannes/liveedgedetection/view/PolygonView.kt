@@ -266,7 +266,7 @@ class PolygonView : FrameLayout {
         var latestPoint = PointF()
         var latestPoint1 = PointF()
         var latestPoint2 = PointF()
-        
+
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             val eid = event.action
             when (eid) {

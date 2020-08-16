@@ -68,7 +68,7 @@ fun Bitmap.resizeToScreenContentSize(newWidth: Int, newHeight: Int): Bitmap? {
     matrix.postScale(scaleWidth, scaleHeight)
 
     // "RECREATE" THE NEW BITMAP
-    val resizedBitmap = Bitmap.createBitmap(            this, 0, 0, width, height, matrix, false)
+    val resizedBitmap = Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
     this.recycle()
     return resizedBitmap
 }
