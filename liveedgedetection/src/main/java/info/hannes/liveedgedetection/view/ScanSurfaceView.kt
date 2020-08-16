@@ -96,11 +96,9 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
         val parameters = camera!!.parameters
         camera!!.setDisplayOrientation((context as Activity).configureCameraAngle())
         parameters.setPreviewSize(previewSize!!.width, previewSize!!.height)
-        if (parameters.supportedFocusModes != null
-                && parameters.supportedFocusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+        if (parameters.supportedFocusModes != null && parameters.supportedFocusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             parameters.focusMode = Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-        } else if (parameters.supportedFocusModes != null
-                && parameters.supportedFocusModes.contains(Parameters.FOCUS_MODE_AUTO)) {
+        } else if (parameters.supportedFocusModes != null && parameters.supportedFocusModes.contains(Parameters.FOCUS_MODE_AUTO)) {
             parameters.focusMode = Parameters.FOCUS_MODE_AUTO
         }
         val size = ScanUtils.determinePictureSize(camera, parameters.previewSize)
