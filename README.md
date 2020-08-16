@@ -6,6 +6,12 @@ LiveEdgeDetection is an Android document detection library built on top of OpenC
 
 **It works best with a dark background.**
 
+# OpenCV
+
+The source code of OpenCV is here https://git.mxtracks.info/opencv/openCV-android-sdk
+The code was too big for github, but the main problem was jitpack.io was not able to build
+https://github.com/jitpack/jitpack.io/issues/4119
+
 # Screenshots
 
 ![Use darker bg](https://github.com/hannesa2/LiveEdgeDetection/blob/master/use_darker_bg.png)
