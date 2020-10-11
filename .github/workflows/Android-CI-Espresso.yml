@@ -14,7 +14,7 @@ jobs:
     runs-on: macOS-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.1
+        uses: actions/checkout@v2.3.3
         with:
           fetch-depth: 0
       - name: Install Android SDK
@@ -42,7 +42,7 @@ jobs:
           tag: default
           abi: x86
       - name: Archive Espresso results
-        uses: actions/upload-artifact@v2.0.1
+        uses: actions/upload-artifact@v2
         with:
           name: LiveEdgeDetection-Espresso-report
           path: app/build/reports/androidTests/connected
@@ -53,7 +53,7 @@ jobs:
           name: LiveEdgeDetection-logcat
           path: artifacts/logcat.log
       - name: Archive screenshots
-        uses: actions/upload-artifact@v2.0.1
+        uses: actions/upload-artifact@v2
         with:
           name: LiveEdgeDetection-Screenshots
           path: screenshots/adb
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.1
+        uses: actions/checkout@v2.3.3
         with:
           fetch-depth: 0
       - name: Install JDK 1.8
@@ -74,7 +74,7 @@ jobs:
       - name: Code checks
         run: ./gradlew check
       - name: Archive Lint report
-        uses: actions/upload-artifact@v2.0.1
+        uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: LiveEdgeDetection-Lint-report
