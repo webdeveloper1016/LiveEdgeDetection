@@ -30,7 +30,8 @@ To use it, make sure to add the below inside root build.gradle file
 allprojects {
     repositories {
         ...
-        maven { url "https://jitpack.io" }
+        maven { url "https://jitpack.io" } // for this library
+        maven { url 'https://artifactory.mxtracks.info/artifactory/gradle-dev-local/' } // for the OpenCV library
     }
 }
 ```
