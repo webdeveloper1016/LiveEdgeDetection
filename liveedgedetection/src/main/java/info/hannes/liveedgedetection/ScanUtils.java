@@ -35,13 +35,10 @@ public class ScanUtils {
         if (camera == null) return null;
         Camera.Parameters cameraParams = camera.getParameters();
         List<Camera.Size> pictureSizeList = cameraParams.getSupportedPictureSizes();
-        Collections.sort(pictureSizeList, new Comparator<Camera.Size>() {
-            @Override
-            public int compare(Camera.Size size1, Camera.Size size2) {
-                Double h1 = Math.sqrt(size1.width * size1.width + size1.height * size1.height);
-                Double h2 = Math.sqrt(size2.width * size2.width + size2.height * size2.height);
-                return h2.compareTo(h1);
-            }
+        Collections.sort(pictureSizeList, (size1, size2) -> {
+            Double h1 = Math.sqrt(size1.width * size1.width + size1.height * size1.height);
+            Double h2 = Math.sqrt(size2.width * size2.width + size2.height * size2.height);
+            return h2.compareTo(h1);
         });
         Camera.Size retSize = null;
 
@@ -69,20 +66,17 @@ public class ScanUtils {
         final double targetRatio = (double) h / w;
         Camera.Parameters cameraParams = camera.getParameters();
         List<Camera.Size> previewSizeList = cameraParams.getSupportedPreviewSizes();
-        Collections.sort(previewSizeList, new Comparator<Camera.Size>() {
-            @Override
-            public int compare(Camera.Size size1, Camera.Size size2) {
-                double ratio1 = (double) size1.width / size1.height;
-                double ratio2 = (double) size2.width / size2.height;
-                Double ratioDiff1 = Math.abs(ratio1 - targetRatio);
-                double ratioDiff2 = Math.abs(ratio2 - targetRatio);
-                if (ScanUtils.compareFloats(ratioDiff1, ratioDiff2)) {
-                    Double h1 = Math.sqrt(size1.width * size1.width + size1.height * size1.height);
-                    Double h2 = Math.sqrt(size2.width * size2.width + size2.height * size2.height);
-                    return h2.compareTo(h1);
-                }
-                return ratioDiff1.compareTo(ratioDiff2);
+        Collections.sort(previewSizeList, (size1, size2) -> {
+            double ratio1 = (double) size1.width / size1.height;
+            double ratio2 = (double) size2.width / size2.height;
+            Double ratioDiff1 = Math.abs(ratio1 - targetRatio);
+            double ratioDiff2 = Math.abs(ratio2 - targetRatio);
+            if (ScanUtils.compareFloats(ratioDiff1, ratioDiff2)) {
+                Double h1 = Math.sqrt(size1.width * size1.width + size1.height * size1.height);
+                Double h2 = Math.sqrt(size2.width * size2.width + size2.height * size2.height);
+                return h2.compareTo(h1);
             }
+            return ratioDiff1.compareTo(ratioDiff2);
         });
 
         return previewSizeList.get(0);
@@ -109,20 +103,9 @@ public class ScanUtils {
         ArrayList<Point> srcPoints = new ArrayList<>(Arrays.asList(src));
         Point[] result = {null, null, null, null};
 
-        Comparator<Point> sumComparator = new Comparator<Point>() {
-            @Override
-            public int compare(Point lhs, Point rhs) {
-                return Double.compare(lhs.y + lhs.x, rhs.y + rhs.x);
-            }
-        };
+        Comparator<Point> sumComparator = (lhs, rhs) -> Double.compare(lhs.y + lhs.x, rhs.y + rhs.x);
 
-        Comparator<Point> diffComparator = new Comparator<Point>() {
-
-            @Override
-            public int compare(Point lhs, Point rhs) {
-                return Double.compare(lhs.y - lhs.x, rhs.y - rhs.x);
-            }
-        };
+        Comparator<Point> diffComparator = (lhs, rhs) -> Double.compare(lhs.y - lhs.x, rhs.y - rhs.x);
 
         // top-left corner = minimal sum
         result[0] = Collections.min(srcPoints, sumComparator);
@@ -209,12 +192,7 @@ public class ScanUtils {
         mHierarchy.release();
 
         if (mHullList.size() != 0) {
-            Collections.sort(mHullList, new Comparator<MatOfPoint>() {
-                @Override
-                public int compare(MatOfPoint lhs, MatOfPoint rhs) {
-                    return Double.compare(Imgproc.contourArea(rhs), Imgproc.contourArea(lhs));
-                }
-            });
+            Collections.sort(mHullList, (lhs, rhs) -> Double.compare(Imgproc.contourArea(rhs), Imgproc.contourArea(lhs)));
             return mHullList.subList(0, Math.min(mHullList.size(), NUM_TOP_CONTOURS));
         }
         return null;
