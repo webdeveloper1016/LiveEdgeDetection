@@ -64,15 +64,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showSnackbar(text: String) {
+    private fun showSnackbar(text: String) {
         var viewPos: View? = findViewById(R.id.coordinatorLayout)
         if (viewPos == null) {
             viewPos = findViewById(android.R.id.content)
         }
         val snackbar = Snackbar.make(viewPos!!, text, Snackbar.LENGTH_INDEFINITE)
         val view = snackbar.view
-        val params = view.layoutParams
-        when (params) {
+        when (val params = view.layoutParams) {
             is CoordinatorLayout.LayoutParams -> {
                 val paramsC = view.layoutParams as CoordinatorLayout.LayoutParams
                 paramsC.gravity = Gravity.CENTER_VERTICAL
