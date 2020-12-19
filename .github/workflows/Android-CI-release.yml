@@ -40,10 +40,10 @@ jobs:
           ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
       - name: cleanup keystore
         run: ./signing/cleanup.sh
-      - name: Search for apk
-        run: echo "::set-env name=APK_RELASE_FILE::$(find . -name *release.apk | head -n 1)"
-      - name: Search for apk
-        run: echo "::set-env name=APK_RELASE_NAME::$(find . -name *release.apk | head -n 1 | xargs basename)"
+      - name: Search for apk file
+        run: echo "APK_RELASE_FILE=$(find . -name *release.apk | head -n 1)" >> $GITHUB_ENV
+      - name: Search for APK release name
+        run: echo "APK_RELASE_NAME=$(find . -name *release.apk | head -n 1 | xargs basename)" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
