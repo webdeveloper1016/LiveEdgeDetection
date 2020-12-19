@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.PointF
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.View
@@ -106,7 +107,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     private fun onRequestCamera(grantResults: IntArray) {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Handler().post {
+            Handler(Looper.getMainLooper()).post {
                 imageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity, timeHoldStill)
                 camera_preview.addView(imageSurfaceView)
             }

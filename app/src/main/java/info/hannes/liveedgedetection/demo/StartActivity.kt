@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import info.hannes.logcat.BothLogActivity
@@ -19,7 +20,7 @@ class StartActivity : AppCompatActivity() {
         buttonLog.setOnClickListener { startActivity(Intent(this, BothLogActivity::class.java)) }
         buttonCrash.setOnClickListener {
             Toast.makeText(this, "force crash ${info.hannes.logcat.BuildConfig.VERSIONNAME}", Toast.LENGTH_SHORT).show()
-            Handler().postDelayed({ throw RuntimeException("Test Crash ${info.hannes.logcat.BuildConfig.VERSIONNAME}") }, 3000)
+            Handler(Looper.getMainLooper()).postDelayed({ throw RuntimeException("Test Crash ${info.hannes.logcat.BuildConfig.VERSIONNAME}") }, 3000)
         }
 
         textBuildType.text  = "BuildType     : ${BuildConfig.BUILD_TYPE}"
