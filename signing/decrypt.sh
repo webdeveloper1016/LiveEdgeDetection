@@ -4,13 +4,17 @@ pwd
 
 if [[ -z "$CRYPT_PASS" ]]
 then
-   echo "\$CRYPT_PASS is empty"
-   exit 1
+   read -sp 'Password: ' CRYPT_PASS
+   if [[ -z "$CRYPT_PASS" ]]
+   then
+      echo "\$CRYPT_PASS Still empty"
+      exit 1
+   fi
 else
    echo "\$CRYPT_PASS available"
 fi
 
-cd signing
+pushd signing
 
 # to encrypt
 #openssl aes-256-cbc -a -salt -k "$CRYPT_PASS" -in release.keystore -out release.keystore.enc
@@ -21,4 +25,4 @@ cd signing
 openssl aes-256-cbc -a -d -md md5 -k "$CRYPT_PASS" -in release.keystore.enc -out release.keystore
 openssl aes-256-cbc -a -d -md md5 -k "$CRYPT_PASS" -in ../app/google-services.json.enc -out ../app/google-services.json
 
-cd ..
+popd 1>/dev/null
