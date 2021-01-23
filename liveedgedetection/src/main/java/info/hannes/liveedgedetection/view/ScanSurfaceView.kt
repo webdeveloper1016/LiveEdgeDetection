@@ -102,9 +102,11 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
             parameters.focusMode = Parameters.FOCUS_MODE_AUTO
         }
         val size = ScanUtils.determinePictureSize(camera, parameters.previewSize)
-        parameters.setPictureSize(size.width, size.height)
-        parameters.pictureFormat = ImageFormat.JPEG
-        camera!!.parameters = parameters
+        size?.let {
+            parameters.setPictureSize(it.width, it.height)
+            parameters.pictureFormat = ImageFormat.JPEG
+            camera!!.parameters = parameters
+        }
         requestLayout()
         setPreviewCallback()
     }
