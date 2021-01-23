@@ -119,7 +119,7 @@ public class ScanUtils {
         return result;
     }
 
-    private static Mat morph_kernel = new Mat(new Size(ScanConstants.KSIZE_CLOSE, ScanConstants.KSIZE_CLOSE), CvType.CV_8UC1, new Scalar(255));
+    private static final Mat morph_kernel = new Mat(new Size(ScanConstants.KSIZE_CLOSE, ScanConstants.KSIZE_CLOSE), CvType.CV_8UC1, new Scalar(255));
 
     public static Quadrilateral detectLargestQuadrilateral(Mat originalMat) {
         Imgproc.cvtColor(originalMat, originalMat, Imgproc.COLOR_BGR2GRAY, 4);
@@ -172,7 +172,7 @@ public class ScanUtils {
         return point;
     }
 
-    private static List<MatOfPoint> findLargestContours(Mat inputMat, int NUM_TOP_CONTOURS) {
+    private static List<MatOfPoint> findLargestContours(Mat inputMat, int numTopContours) {
         Mat mHierarchy = new Mat();
         List<MatOfPoint> mContourList = new ArrayList<>();
         //finding contours - as we are sorting by area anyway, we can use RETR_LIST - faster than RETR_EXTERNAL.
@@ -193,7 +193,7 @@ public class ScanUtils {
 
         if (mHullList.size() != 0) {
             Collections.sort(mHullList, (lhs, rhs) -> Double.compare(Imgproc.contourArea(rhs), Imgproc.contourArea(lhs)));
-            return mHullList.subList(0, Math.min(mHullList.size(), NUM_TOP_CONTOURS));
+            return mHullList.subList(0, Math.min(mHullList.size(), numTopContours));
         }
         return null;
     }
