@@ -43,7 +43,7 @@
                 android:layout_weight="1" />
 
             <ImageView
-                android:id="@+id/crop_accept_btn"
+                android:id="@+id/buttonCropOk"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:alpha="0.8"
@@ -55,7 +55,7 @@
                 android:layout_weight="0.6" />
 
             <ImageView
-                android:id="@+id/crop_reject_btn"
+                android:id="@+id/buttonCropReject"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:alpha="0.8"

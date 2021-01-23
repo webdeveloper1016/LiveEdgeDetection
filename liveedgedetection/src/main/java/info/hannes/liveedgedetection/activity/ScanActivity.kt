@@ -52,8 +52,8 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         setContentView(R.layout.activity_scan)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        crop_accept_btn.setOnClickListener(this)
-        crop_reject_btn.setOnClickListener {
+        buttonCropOk.setOnClickListener(this)
+        buttonCropReject.setOnClickListener {
             TransitionManager.beginDelayedTransition(container_scan)
             crop_layout.visibility = View.GONE
             imageSurfaceView?.setPreviewCallback()
@@ -158,42 +158,38 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
             copyBitmap = copyBitmap?.resizeToScreenContentSize(width, height)
             copyBitmap?.let {
                 val originalMat = Mat(it.height, it.width, CvType.CV_8UC1)
-                Utils.bitmapToMat(copyBitmap, originalMat)
+                Utils.bitmapToMat(it, originalMat)
                 val points: ArrayList<PointF>
                 val pointFs: MutableMap<Int, PointF> = HashMap()
-                try {
-                    val quad = ScanUtils.detectLargestQuadrilateral(originalMat)
-                    if (null != quad) {
-                        val resultArea = abs(Imgproc.contourArea(quad.contour))
-                        val previewArea = originalMat.rows() * originalMat.cols().toDouble()
-                        if (resultArea > previewArea * 0.08) {
-                            points = ArrayList()
-                            points.add(PointF(quad.points[0].x.toFloat(), quad.points[0].y.toFloat()))
-                            points.add(PointF(quad.points[1].x.toFloat(), quad.points[1].y.toFloat()))
-                            points.add(PointF(quad.points[3].x.toFloat(), quad.points[3].y.toFloat()))
-                            points.add(PointF(quad.points[2].x.toFloat(), quad.points[2].y.toFloat()))
-                        } else {
-                            points = it.getPolygonDefaultPoints()
-                        }
+                val quad = ScanUtils.detectLargestQuadrilateral(originalMat)
+                if (null != quad) {
+                    val resultArea = abs(Imgproc.contourArea(quad.contour))
+                    val previewArea = originalMat.rows() * originalMat.cols().toDouble()
+                    if (resultArea > previewArea * 0.08) {
+                        points = ArrayList()
+                        points.add(PointF(quad.points[0].x.toFloat(), quad.points[0].y.toFloat()))
+                        points.add(PointF(quad.points[1].x.toFloat(), quad.points[1].y.toFloat()))
+                        points.add(PointF(quad.points[3].x.toFloat(), quad.points[3].y.toFloat()))
+                        points.add(PointF(quad.points[2].x.toFloat(), quad.points[2].y.toFloat()))
                     } else {
                         points = it.getPolygonDefaultPoints()
                     }
-                    var index = -1
-                    for (pointF in points) {
-                        pointFs[++index] = pointF
-                    }
-                    polygon_view.points = pointFs
-                    val padding = resources.getDimension(R.dimen.scan_padding).toInt()
-                    val layoutParams = FrameLayout.LayoutParams(it.width + 2 * padding, it.height + 2 * padding)
-                    layoutParams.gravity = Gravity.CENTER
-                    polygon_view.layoutParams = layoutParams
-                    TransitionManager.beginDelayedTransition(container_scan)
-                    crop_layout.visibility = View.VISIBLE
-                    crop_image_view.setImageBitmap(copyBitmap)
-                    crop_image_view.scaleType = ImageView.ScaleType.FIT_XY
-                } catch (e: Exception) {
-                    Timber.e(e)
+                } else {
+                    points = it.getPolygonDefaultPoints()
                 }
+                var index = -1
+                for (pointF in points) {
+                    pointFs[++index] = pointF
+                }
+                polygon_view.points = pointFs
+                val padding = resources.getDimension(R.dimen.scan_padding).toInt()
+                val layoutParams = FrameLayout.LayoutParams(it.width + 2 * padding, it.height + 2 * padding)
+                layoutParams.gravity = Gravity.CENTER
+                polygon_view.layoutParams = layoutParams
+                TransitionManager.beginDelayedTransition(container_scan)
+                crop_layout.visibility = View.VISIBLE
+                crop_image_view.setImageBitmap(it)
+                crop_image_view.scaleType = ImageView.ScaleType.FIT_XY
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -202,9 +198,9 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     @SuppressLint("SimpleDateFormat")
     override fun onClick(view: View) {
+        Timber.d("Image accepted")
         val points = polygon_view.points
-        val croppedBitmap: Bitmap?
-        croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
+        val croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
             val point1 = Point(points.getValue(0).x.toDouble(), points.getValue(0).y.toDouble())
             val point2 = Point(points.getValue(1).x.toDouble(), points.getValue(1).y.toDouble())
             val point3 = Point(points.getValue(2).x.toDouble(), points.getValue(2).y.toDouble())

@@ -1,5 +1,6 @@
 package info.hannes.liveedgedetection.demo
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_CODE)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE) {
@@ -52,6 +54,9 @@ class MainActivity : AppCompatActivity() {
                         val baseBitmap = FileUtils.decodeBitmapFromFile(it)
                         scanned_image.setImageBitmap(baseBitmap)
                         scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
+
+                        textDensity.text = "Density ${baseBitmap.density}"
+                        textDimension.text = "${baseBitmap.width} / ${baseBitmap.height}"
 
                         showSnackbar(filePath)
                         Timber.i(filePath)

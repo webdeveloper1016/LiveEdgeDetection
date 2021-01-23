@@ -83,7 +83,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
             if (null != flashModes && flashModes.contains(Parameters.FLASH_MODE_AUTO)) {
                 cameraParams.flashMode = Parameters.FLASH_MODE_AUTO
             }
-            camera?.setParameters(cameraParams)
+            camera?.parameters = cameraParams
         }
     }
 
@@ -137,7 +137,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
         if (null != camera) {
             try {
                 val pictureSize = camera.parameters.previewSize
-                Timber.d("onPreviewFrame - received image w=${pictureSize.width} h=${pictureSize.height}")
+                Timber.v("onPreviewFrame - received image w=${pictureSize.width} h=${pictureSize.height}")
                 val yuv = Mat(Size(pictureSize.width.toDouble(), pictureSize.height * 1.5), CvType.CV_8UC1)
                 yuv.put(0, 0, data)
                 val mat = Mat(Size(pictureSize.width.toDouble(), pictureSize.height.toDouble()), CvType.CV_8UC4)
@@ -165,7 +165,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
         // Attention: axis are swapped
         val previewWidth = stdSize.height.toFloat()
         val previewHeight = stdSize.width.toFloat()
-        Timber.i("previewWidth=$previewWidth previewHeight=$previewHeight")
+        Timber.v("previewWidth=$previewWidth previewHeight=$previewHeight")
 
         //Points are drawn in anticlockwise direction
         path.moveTo(previewWidth - points[0].y.toFloat(), points[0].x.toFloat())
@@ -174,7 +174,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
         path.lineTo(previewWidth - points[3].y.toFloat(), points[3].x.toFloat())
         path.close()
         val area = abs(Imgproc.contourArea(approx))
-        Timber.i("Contour Area=$area")
+        Timber.v("Contour Area=$area")
         val newBox = PathShape(path, previewWidth, previewHeight)
         val paint = Paint()
         val border = Paint()
@@ -188,7 +188,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
         var resultWidth = points[3].y - points[0].y
         val bottomWidth = points[2].y - points[1].y
         if (bottomWidth > resultWidth) resultWidth = bottomWidth
-        Timber.i("resultWidth=$resultWidth resultHeight=$resultHeight")
+        Timber.v("resultWidth=$resultWidth resultHeight=$resultHeight")
         val imgDetectionPropsObj = ImageDetectionProperties(previewWidth.toDouble(), previewHeight.toDouble(), resultWidth, resultHeight,
                 previewArea.toDouble(), area, points[0], points[1], points[2], points[3])
         val scanHint: ScanHint
@@ -224,7 +224,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
                 }
             }
         }
-        Timber.i("label=$scanHint preview Area 95%=${0.95 * previewArea} Preview Area 20%=${0.20 * previewArea} Area=$area")
+        Timber.v("label=$scanHint preview Area 95%=${0.95 * previewArea} Preview Area 20%=${0.20 * previewArea} Area=$area")
         border.strokeWidth = 12f
         iScanner.displayHint(scanHint)
         setPaintAndBorder(scanHint, paint, border)
