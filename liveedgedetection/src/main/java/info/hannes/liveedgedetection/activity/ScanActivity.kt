@@ -52,8 +52,8 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         setContentView(R.layout.activity_scan)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        crop_accept_btn.setOnClickListener(this)
-        crop_reject_btn.setOnClickListener {
+        buttonCropOk.setOnClickListener(this)
+        buttonCropReject.setOnClickListener {
             TransitionManager.beginDelayedTransition(container_scan)
             crop_layout.visibility = View.GONE
             imageSurfaceView?.setPreviewCallback()
@@ -202,6 +202,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     @SuppressLint("SimpleDateFormat")
     override fun onClick(view: View) {
+        Timber.d("Image accepted")
         val points = polygon_view.points
         val croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
             val point1 = Point(points.getValue(0).x.toDouble(), points.getValue(0).y.toDouble())
