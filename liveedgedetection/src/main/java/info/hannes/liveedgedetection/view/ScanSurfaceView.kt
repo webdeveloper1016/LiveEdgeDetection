@@ -83,7 +83,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
             if (null != flashModes && flashModes.contains(Parameters.FLASH_MODE_AUTO)) {
                 cameraParams.flashMode = Parameters.FLASH_MODE_AUTO
             }
-            camera?.setParameters(cameraParams)
+            camera?.parameters = cameraParams
         }
     }
 

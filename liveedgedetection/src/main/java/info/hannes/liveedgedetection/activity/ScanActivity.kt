@@ -203,8 +203,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     @SuppressLint("SimpleDateFormat")
     override fun onClick(view: View) {
         val points = polygon_view.points
-        val croppedBitmap: Bitmap?
-        croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
+        val croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
             val point1 = Point(points.getValue(0).x.toDouble(), points.getValue(0).y.toDouble())
             val point2 = Point(points.getValue(1).x.toDouble(), points.getValue(1).y.toDouble())
             val point3 = Point(points.getValue(2).x.toDouble(), points.getValue(2).y.toDouble())
