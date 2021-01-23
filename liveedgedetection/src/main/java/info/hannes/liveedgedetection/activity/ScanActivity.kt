@@ -39,10 +39,12 @@ import kotlin.math.abs
  * This class initiates camera and detects edges on live view
  */
 class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
+    private var fullSizePoints: MutableMap<Int, PointF>? = null
     private var imageSurfaceView: ScanSurfaceView? = null
     private var isCameraPermissionGranted = true
     private var isExternalStorageStatsPermissionGranted = true
-    private var copyBitmap: Bitmap? = null
+    private var screenSizeBitmap: Bitmap? = null
+    private var fullSizeBitmap: Bitmap? = null
     private var timeHoldStill: Long = ScanSurfaceView.DEFAULT_TIME_POST_PICTURE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -152,11 +154,12 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     override fun onPictureClicked(bitmap: Bitmap) {
         try {
-            copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+            fullSizeBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+            screenSizeBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
             val height = window.findViewById<View>(Window.ID_ANDROID_CONTENT).height
             val width = window.findViewById<View>(Window.ID_ANDROID_CONTENT).width
-            copyBitmap = copyBitmap?.resizeToScreenContentSize(width, height)
-            copyBitmap?.let {
+            screenSizeBitmap = screenSizeBitmap?.resizeToScreenContentSize(width, height)
+            screenSizeBitmap?.let {
                 val originalMat = Mat(it.height, it.width, CvType.CV_8UC1)
                 Utils.bitmapToMat(it, originalMat)
                 val points: ArrayList<PointF>
@@ -191,6 +194,33 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
                 crop_image_view.setImageBitmap(it)
                 crop_image_view.scaleType = ImageView.ScaleType.FIT_XY
             }
+            fullSizeBitmap?.let {
+                val originalMat = Mat(it.height, it.width, CvType.CV_8UC1)
+                Utils.bitmapToMat(it, originalMat)
+                val points: ArrayList<PointF>
+                val pointFs: MutableMap<Int, PointF> = HashMap()
+                val quad = ScanUtils.detectLargestQuadrilateral(originalMat)
+                if (null != quad) {
+                    val resultArea = abs(Imgproc.contourArea(quad.contour))
+                    val previewArea = originalMat.rows() * originalMat.cols().toDouble()
+                    if (resultArea > previewArea * 0.08) {
+                        points = ArrayList()
+                        points.add(PointF(quad.points[0].x.toFloat(), quad.points[0].y.toFloat()))
+                        points.add(PointF(quad.points[1].x.toFloat(), quad.points[1].y.toFloat()))
+                        points.add(PointF(quad.points[3].x.toFloat(), quad.points[3].y.toFloat()))
+                        points.add(PointF(quad.points[2].x.toFloat(), quad.points[2].y.toFloat()))
+                    } else {
+                        points = it.getPolygonDefaultPoints()
+                    }
+                } else {
+                    points = it.getPolygonDefaultPoints()
+                }
+                var index = -1
+                for (pointF in points) {
+                    pointFs[++index] = pointF
+                }
+                fullSizePoints = pointFs
+            }
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -198,16 +228,17 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
 
     @SuppressLint("SimpleDateFormat")
     override fun onClick(view: View) {
-        Timber.d("Image accepted")
-        val points = polygon_view.points
+        val points = fullSizePoints!!.toMap()
         val croppedBitmap = if (ScanUtils.isScanPointsValid(points)) {
             val point1 = Point(points.getValue(0).x.toDouble(), points.getValue(0).y.toDouble())
             val point2 = Point(points.getValue(1).x.toDouble(), points.getValue(1).y.toDouble())
             val point3 = Point(points.getValue(2).x.toDouble(), points.getValue(2).y.toDouble())
             val point4 = Point(points.getValue(3).x.toDouble(), points.getValue(3).y.toDouble())
-            copyBitmap?.enhanceReceipt(point1, point2, point3, point4)
+            Timber.d("Image accepted $point1 $point2 $point3 $point4")
+            fullSizeBitmap?.enhanceReceipt(point1, point2, point3, point4)
         } else {
-            copyBitmap
+            Timber.d("Image accepted")
+            fullSizeBitmap
         }
         croppedBitmap?.let { bitmap ->
             val imageName = ScanConstants.IMAGE_NAME + SimpleDateFormat("-yyyy-MM-dd_HHmmss").format(Date()) + ".png"
