@@ -221,10 +221,28 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
                 }
                 fullSizePoints = pointFs
             }
+            Timber.d("xxx screen ${screenSizeBitmap?.width}/${screenSizeBitmap?.height}")
+            Timber.d("xxx fullSi ${fullSizeBitmap?.width}/${fullSizeBitmap?.height}")
+
+            Timber.d("xxy screen \n${polygon_view.points.toLog(PointF(screenSizeBitmap!!.width.toFloat(), screenSizeBitmap!!.height.toFloat()))}")
+            Timber.d("xxy fullSi \n${fullSizePoints?.toLog(PointF(fullSizeBitmap!!.width.toFloat(), fullSizeBitmap!!.height.toFloat()))}")
+
         } catch (e: Exception) {
             Timber.e(e)
         }
     }
+
+    private fun Map<Int, PointF>.toLog(dimension: PointF): String {
+        var res = "$dimension\n"
+        var i = 0
+        for ((key, value) in this) {
+            res += "$i=$key ${value.x.percent(dimension.x)} / ${value.y.percent(dimension.y)} \n"
+            i++
+        }
+        return res
+    }
+
+    private fun Float.percent(hundred: Float): String = "${(this * 100 / hundred).toInt()}% $this/$hundred"
 
     @SuppressLint("SimpleDateFormat")
     override fun onClick(view: View) {
