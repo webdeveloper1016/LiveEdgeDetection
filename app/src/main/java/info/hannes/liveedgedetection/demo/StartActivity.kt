@@ -23,7 +23,7 @@ class StartActivity : AppCompatActivity() {
             Handler(Looper.getMainLooper()).postDelayed({ throw RuntimeException("Test Crash ${info.hannes.logcat.BuildConfig.VERSIONNAME}") }, 3000)
         }
 
-        textBuildType.text  = "BuildType     : ${BuildConfig.BUILD_TYPE}"
+        textBuildType.text = "BuildType     : ${BuildConfig.BUILD_TYPE}"
         textAppVersion.text = "App version   : ${BuildConfig.VERSION_NAME}"
         textOpenCVVersion.text = "OpenCV version: ${org.opencv.BuildConfig.VERSION_NAME}"
     }

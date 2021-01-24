@@ -31,4 +31,26 @@
         app:layout_constraintTop_toBottomOf="@id/textDensity"
         tools:text="dimension" />
 
+    <Button
+        android:id="@+id/buttonRotate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/round_shape_btn"
+        android:text="@string/rotate"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonOpenExtern"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/round_shape_btn"
+        android:text="@string/show_pdf"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonRotate" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
