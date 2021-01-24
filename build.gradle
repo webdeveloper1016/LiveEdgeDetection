@@ -18,6 +18,7 @@ buildscript {
 
 subprojects {
     apply plugin: 'maven'
+    apply plugin: 'signing'
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 
     // Optionally configure plugin
