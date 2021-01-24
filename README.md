@@ -6,13 +6,13 @@ LiveEdgeDetection is an Android document detection library built on top of OpenC
 
 **It works best with a dark background.**
 
-# OpenCV
+## OpenCV
 
 The source code of OpenCV is here https://git.mxtracks.info/opencv/openCV-android-sdk
 The code was too big for github, but the main problem was jitpack.io was not able to build
 https://github.com/jitpack/jitpack.io/issues/4119
 
-# Screenshots
+## Screenshots
 
 ![Use darker bg](https://github.com/hannesa2/LiveEdgeDetection/blob/master/use_darker_bg.png)
 ![Move closer](https://github.com/hannesa2/LiveEdgeDetection/blob/master/move_closer.png)
@@ -20,9 +20,8 @@ https://github.com/jitpack/jitpack.io/issues/4119
 ![Adjust angle](https://github.com/hannesa2/LiveEdgeDetection/blob/master/adjust_angle.png)
 ![Hold still](https://github.com/hannesa2/LiveEdgeDetection/blob/master/hold_still.png)
 ![Adjust crop](https://github.com/hannesa2/LiveEdgeDetection/blob/master/adjust_crop.png)
-![Result](https://github.com/hannesa2/LiveEdgeDetection/blob/master/cropped.png)
 
-# Integrating into your project
+## Integrating into your project
 This library is available in [JitPack.io](https://jitpack.io/#hannesa2/LiveEdgeDetection/) repository.
 To use it, make sure to add the below inside root build.gradle file
 
@@ -43,7 +42,7 @@ dependencies {
    implementation 'com.github.hannesa2:LiveEdgeDetection:$latestVersion'
 }
 ```
-# Usage
+## Usage
 Out of the box it uses OpenCV.
 
 1. Start **startActivityForResult** from your activity
@@ -64,7 +63,7 @@ Bitmap baseBitmap = ScanUtils.decodeBitmapFromFile(filePath, ScanConstants.IMAGE
         android:scaleType="center" />
 ```
 
-# License
+## License LiveEdgeDetection
 ```
 Copyright 2020 hannesa2.
 
@@ -79,5 +78,28 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
+
+## License PDF library
+```
+https://github.com/itext/itext7/blob/develop/LICENSE.md
+
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://itextpdf.com/sales.  For AGPL licensing, see below.
+
+AGPL licensing:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 ```
 
