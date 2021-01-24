@@ -26,6 +26,7 @@ subprojects {
 }
 
 allprojects {
+    group = 'info.hannes.liveedgedetection'
     repositories {
         google()
         jcenter()
