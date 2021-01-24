@@ -16,7 +16,7 @@ class StartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
 
-        buttonScan.setOnClickListener { startActivity(Intent(this, MainActivity::class.java)) }
+        buttonScan.setOnClickListener { startActivity(Intent(this, PreviewActivity::class.java)) }
         buttonLog.setOnClickListener { startActivity(Intent(this, BothLogActivity::class.java)) }
         buttonCrash.setOnClickListener {
             Toast.makeText(this, "force crash ${info.hannes.logcat.BuildConfig.VERSIONNAME}", Toast.LENGTH_SHORT).show()

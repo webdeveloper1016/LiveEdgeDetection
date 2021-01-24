@@ -17,13 +17,13 @@ import info.hannes.github.AppUpdateHelper
 import info.hannes.liveedgedetection.FileUtils
 import info.hannes.liveedgedetection.ScanConstants
 import info.hannes.liveedgedetection.activity.ScanActivity
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_preview.*
 import timber.log.Timber
 
-class MainActivity : AppCompatActivity() {
+class PreviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_preview)
 
         startScan()
 

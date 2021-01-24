@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" />
+        <activity android:name=".PreviewActivity" />
 
         <activity
             android:name="info.hannes.logcat.BothLogActivity"
