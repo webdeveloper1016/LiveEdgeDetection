@@ -17,6 +17,8 @@ import info.hannes.github.AppUpdateHelper
 import info.hannes.liveedgedetection.FileUtils
 import info.hannes.liveedgedetection.ScanConstants
 import info.hannes.liveedgedetection.activity.ScanActivity
+import info.hannes.liveedgedetection.rotate
+import info.hannes.liveedgedetection.storeBitmap
 import info.hannes.pdf.activity.createPdf
 import info.hannes.pdf.activity.viewPdf
 import kotlinx.android.synthetic.main.activity_preview.*
@@ -78,6 +80,15 @@ class PreviewActivity : AppCompatActivity() {
                 filePath?.let { file ->
                     PreviewActivity@ this.viewPdf(File(file).createPdf(path))
                 }
+            }
+        }
+
+        buttonRotate.setOnClickListener {
+            filePath?.let {
+                var baseBitmap = FileUtils.decodeBitmapFromFile(it)
+                baseBitmap = baseBitmap.rotate(90f)
+                scanned_image.setImageBitmap(baseBitmap)
+                this.storeBitmap(baseBitmap, File(it))
             }
         }
     }

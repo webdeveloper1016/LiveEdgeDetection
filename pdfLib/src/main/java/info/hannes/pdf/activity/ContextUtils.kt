@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.core.content.FileProvider
 import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfVersion
@@ -13,18 +12,19 @@ import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.kernel.pdf.WriterProperties
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Image
+import info.hannes.liveedgedetection.getUriForFile
 import timber.log.Timber
 import java.io.File
 
 
 fun Context.viewPdf(pdfFile: File) {
-    val path: Uri = FileProvider.getUriForFile(this, applicationContext.packageName + ".provider", pdfFile);
+    val path: Uri = this.getUriForFile(pdfFile)
 
     // Setting the intent for pdf reader
     val pdfIntent = Intent(Intent.ACTION_VIEW)
     pdfIntent.setDataAndType(path, "application/pdf")
     pdfIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-    pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     try {
         startActivity(pdfIntent)
     } catch (e: ActivityNotFoundException) {
