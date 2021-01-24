@@ -17,10 +17,15 @@ import info.hannes.github.AppUpdateHelper
 import info.hannes.liveedgedetection.FileUtils
 import info.hannes.liveedgedetection.ScanConstants
 import info.hannes.liveedgedetection.activity.ScanActivity
+import info.hannes.pdf.activity.createPdf
+import info.hannes.pdf.activity.viewPdf
 import kotlinx.android.synthetic.main.activity_preview.*
 import timber.log.Timber
+import java.io.File
 
 class PreviewActivity : AppCompatActivity() {
+    private var filePath: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
@@ -49,7 +54,7 @@ class PreviewActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 data?.extras?.let { bundle ->
-                    val filePath = bundle.getString(ScanConstants.SCANNED_RESULT)
+                    filePath = bundle.getString(ScanConstants.SCANNED_RESULT)
                     filePath?.let {
                         val baseBitmap = FileUtils.decodeBitmapFromFile(it)
                         scanned_image.setImageBitmap(baseBitmap)
@@ -58,13 +63,21 @@ class PreviewActivity : AppCompatActivity() {
                         textDensity.text = "Density ${baseBitmap.density}"
                         textDimension.text = "${baseBitmap.width} / ${baseBitmap.height}"
 
-                        showSnackbar(filePath)
-                        Timber.i(filePath)
+                        showSnackbar(it)
+                        Timber.i(it)
                     }
 
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 finish()
+            }
+        }
+
+        buttonOpenExtern.setOnClickListener {
+            externalCacheDir?.let { path ->
+                filePath?.let { file ->
+                    PreviewActivity@ this.viewPdf(File(file).createPdf(path))
+                }
             }
         }
     }
