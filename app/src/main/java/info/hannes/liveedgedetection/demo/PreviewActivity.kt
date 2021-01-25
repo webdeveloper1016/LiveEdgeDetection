@@ -14,13 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.Snackbar
 import info.hannes.github.AppUpdateHelper
-import info.hannes.liveedgedetection.FileUtils
-import info.hannes.liveedgedetection.ScanConstants
+import info.hannes.liveedgedetection.*
 import info.hannes.liveedgedetection.activity.ScanActivity
-import info.hannes.liveedgedetection.rotate
-import info.hannes.liveedgedetection.storeBitmap
-import info.hannes.pdf.activity.createPdf
-import info.hannes.pdf.activity.viewPdf
 import kotlinx.android.synthetic.main.activity_preview.*
 import timber.log.Timber
 import java.io.File
