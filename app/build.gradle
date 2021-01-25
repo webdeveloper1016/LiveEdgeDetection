@@ -99,7 +99,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
     implementation project(':liveedgedetection')
-    implementation project(':pdflib')
     implementation 'com.github.AppDevNext.Logcat:LogcatCrashlytic:2.3.1'
     implementation 'com.github.hannesa2:githubAppUpdate:0.8'
 
