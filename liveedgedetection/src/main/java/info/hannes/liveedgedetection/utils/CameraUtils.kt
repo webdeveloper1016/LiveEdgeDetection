@@ -1,4 +1,4 @@
-package info.hannes.liveedgedetection
+package info.hannes.liveedgedetection.utils
 
 import android.app.Activity
 import android.content.Context

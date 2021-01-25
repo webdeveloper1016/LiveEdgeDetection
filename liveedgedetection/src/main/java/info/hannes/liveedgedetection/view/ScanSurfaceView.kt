@@ -13,6 +13,9 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.FrameLayout
 import info.hannes.liveedgedetection.*
+import info.hannes.liveedgedetection.utils.ScanUtils
+import info.hannes.liveedgedetection.utils.configureCameraAngle
+import info.hannes.liveedgedetection.utils.decodeBitmapFromByteArray
 import org.opencv.core.*
 import org.opencv.core.Point
 import org.opencv.core.Size
@@ -310,7 +313,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
         camera.stopPreview()
         iScanner.displayHint(ScanHint.NO_MESSAGE)
         clearAndInvalidateCanvas()
-        var bitmap = FileUtils.decodeBitmapFromByteArray(data, ScanConstants.HIGHER_SAMPLING_THRESHOLD, ScanConstants.HIGHER_SAMPLING_THRESHOLD)
+        var bitmap = data.decodeBitmapFromByteArray(ScanConstants.HIGHER_SAMPLING_THRESHOLD, ScanConstants.HIGHER_SAMPLING_THRESHOLD)
         val matrix = Matrix()
         matrix.postRotate(90f)
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)

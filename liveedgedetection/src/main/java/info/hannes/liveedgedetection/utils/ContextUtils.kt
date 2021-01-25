@@ -1,4 +1,4 @@
-package info.hannes.liveedgedetection
+package info.hannes.liveedgedetection.utils
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import java.io.File
 
+
+fun Context.getBaseDirectoryFromPathString(path: String): File = getDir(path, Context.MODE_PRIVATE)
 
 fun Context.storeBitmap(bitmap: Bitmap, file: File) {
     getUriForFile(file).run {

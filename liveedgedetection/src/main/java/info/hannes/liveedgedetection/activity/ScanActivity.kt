@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import info.hannes.liveedgedetection.*
+import info.hannes.liveedgedetection.utils.*
 import info.hannes.liveedgedetection.view.ScanSurfaceView
 import kotlinx.android.synthetic.main.activity_scan.*
 import org.opencv.android.Utils
@@ -244,9 +245,9 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
             val imageName = ScanConstants.IMAGE_NAME + SimpleDateFormat("-yyyy-MM-dd_HHmmss").format(Date()) + ".png"
             var path: String? = null
             intent.getStringExtra(ScanConstants.IMAGE_PATH)?.let {
-                path = FileUtils.saveToExternalMemory(bitmap, it, imageName, 90).first
+                path = bitmap.saveToExternalMemory(it, imageName, 90).first
             } ?: run {
-                path = FileUtils.saveToInternalMemory(bitmap, ScanConstants.INTERNAL_IMAGE_DIR, imageName, this@ScanActivity, 90).first
+                path = bitmap.saveToInternalMemory(ScanConstants.INTERNAL_IMAGE_DIR, imageName, this@ScanActivity, 90).first
             }
             setResult(Activity.RESULT_OK, Intent().putExtra(ScanConstants.SCANNED_RESULT, path + File.separator + imageName))
         }
