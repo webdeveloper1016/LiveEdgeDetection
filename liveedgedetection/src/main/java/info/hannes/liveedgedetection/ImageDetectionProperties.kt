@@ -1,5 +1,6 @@
 package info.hannes.liveedgedetection
 
+import info.hannes.liveedgedetection.utils.ScanUtils
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
 import kotlin.math.abs

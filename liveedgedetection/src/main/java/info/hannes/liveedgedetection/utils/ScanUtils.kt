@@ -1,7 +1,8 @@
-package info.hannes.liveedgedetection
+package info.hannes.liveedgedetection.utils
 
 import android.graphics.PointF
 import android.hardware.Camera
+import info.hannes.liveedgedetection.ScanConstants
 import info.hannes.liveedgedetection.view.Quadrilateral
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc

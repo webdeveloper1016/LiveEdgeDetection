@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import info.hannes.github.AppUpdateHelper
 import info.hannes.liveedgedetection.*
 import info.hannes.liveedgedetection.activity.ScanActivity
+import info.hannes.liveedgedetection.utils.*
 import kotlinx.android.synthetic.main.activity_preview.*
 import timber.log.Timber
 import java.io.File
@@ -53,7 +54,7 @@ class PreviewActivity : AppCompatActivity() {
                 data?.extras?.let { bundle ->
                     filePath = bundle.getString(ScanConstants.SCANNED_RESULT)
                     filePath?.let {
-                        val baseBitmap = FileUtils.decodeBitmapFromFile(it)
+                        val baseBitmap = it.decodeBitmapFromFile()
                         scanned_image.setImageBitmap(baseBitmap)
                         scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
 
@@ -80,7 +81,7 @@ class PreviewActivity : AppCompatActivity() {
 
         buttonRotate.setOnClickListener {
             filePath?.let {
-                var baseBitmap = FileUtils.decodeBitmapFromFile(it)
+                var baseBitmap = it.decodeBitmapFromFile()
                 baseBitmap = baseBitmap.rotate(90f)
                 scanned_image.setImageBitmap(baseBitmap)
                 this.storeBitmap(baseBitmap, File(it))

@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import info.hannes.liveedgedetection.PolygonPoints
 import info.hannes.liveedgedetection.R
 import info.hannes.liveedgedetection.activity.ScanActivity
-import info.hannes.liveedgedetection.dp2px
+import info.hannes.liveedgedetection.utils.dp2px
 import timber.log.Timber
 import java.util.*
 
