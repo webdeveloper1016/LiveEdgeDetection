@@ -80,7 +80,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## License PDF library
+## License PDF
 ```
 https://github.com/itext/itext7/blob/develop/LICENSE.md
 
