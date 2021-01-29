@@ -1,5 +1,6 @@
 package info.hannes.liveedgedetection.utils
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.itextpdf.io.image.ImageDataFactory
@@ -19,6 +20,25 @@ fun String.decodeBitmapFromFile(): Bitmap {
     options.inPreferredConfig = Bitmap.Config.ARGB_8888
     return BitmapFactory.decodeFile(this, options)
 }
+
+fun Bitmap.store(file: File, context: Context) {
+    context.getUriForFile(file).run {
+        context.contentResolver.openOutputStream(this)?.run {
+            compress(Bitmap.CompressFormat.JPEG, 100, this)
+            close()
+        }
+    }
+}
+
+fun File.store(bitmap: Bitmap, context: Context) {
+    context.getUriForFile(this).run {
+        context.contentResolver.openOutputStream(this)?.run {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
+            close()
+        }
+    }
+}
+
 
 fun File.createPdf(path: File): File {
 
