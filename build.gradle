@@ -59,16 +59,14 @@ static def getGitCommitCount() {
 
 @SuppressWarnings("unused")
 static def getTag() {
-    def tagVersion = "$System.env.TAG_VERSION"
-    if (tagVersion == "null") {
-        println "No variable TAG_VERSION specified, I'm using 'git describe --abbrev=0'"
-        def process = "git describe --tag".execute()
-        tagVersion = process.text.toString().trim()
-    } else {
-        def tagVersionToken = tagVersion.split("/")
-        tagVersion = tagVersionToken[2]
-    }
-    return tagVersion
+    // with local un-commited changes a -DIRTY is added
+    def processChanges = "git diff-index --name-only HEAD --".execute()
+    def dirty = ""
+    if (!processChanges.text.toString().trim().isEmpty())
+        dirty = "-DIRTY"
+
+    def process = "git describe --tags".execute()
+    return process.text.toString().trim() + dirty
 }
 
 task clean(type: Delete) {
