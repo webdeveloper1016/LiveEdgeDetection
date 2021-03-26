@@ -55,6 +55,12 @@ android {
                 keyPassword System.getenv("ALIAS_PASS")
             }
         }
+        debugCI {
+            storeFile file('./debug.keystore')
+            storePassword "android"
+            keyPassword "android"
+            keyAlias "androiddebugkey"
+        }
     }
 
     buildTypes {
@@ -66,7 +72,12 @@ android {
         }
 
         debug {
+            if (System.getenv("CI") == "true") { // Github action
+                signingConfig signingConfigs.debugCI
+            }
+
             applicationIdSuffix ".debug"
+            versionNameSuffix ".debug"
         }
     }
 
