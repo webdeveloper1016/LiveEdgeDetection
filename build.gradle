@@ -3,7 +3,7 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
@@ -29,7 +29,7 @@ allprojects {
     group = 'info.hannes.liveedgedetection'
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
         maven {
             url 'https://artifactory.mxtracks.info/artifactory/gradle-dev-local/'
