@@ -21,11 +21,6 @@ android {
         buildConfigField "String", 'GIT_REPOSITORY', "\"" + getGitOriginRemote() + "\""
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     signingConfigs {
         def out = services.get(StyledTextOutputFactory).create("")
         if (System.env.USER == "hannes") {
