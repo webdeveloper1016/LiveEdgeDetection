@@ -48,6 +48,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     private var fullSizeBitmap: Bitmap? = null
     private var timeHoldStill: Long = ScanSurfaceView.DEFAULT_TIME_POST_PICTURE
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -100,6 +101,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSIONS_REQUEST_CAMERA -> onRequestCamera(grantResults)
             PERMISSIONS_REQUEST_EXTERNAL_STORAGE -> onRequestExternalStorage(grantResults)
