@@ -101,7 +101,7 @@ dependencies {
     androidTestImplementation 'com.github.AppDevNext:Moka:1.0'
     androidTestImplementation "androidx.test.ext:junit:1.1.2"
     androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
     implementation project(':liveedgedetection')
     implementation 'com.github.AppDevNext.Logcat:LogcatCrashlytic:2.8.1'
