@@ -1,0 +1,3 @@
+install:
+  - ./gradlew :liveedgedetection:build :liveedgedetection:publishToMavenLocal -x :liveedgedetection:test
+  - find . -name "*.aar"
