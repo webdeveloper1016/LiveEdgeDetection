@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".StartActivity">
+        <activity
+            android:name=".StartActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,10 +22,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".PreviewActivity" />
+        <activity
+            android:name=".PreviewActivity"
+            android:exported="true" />
 
         <activity
             android:name="info.hannes.logcat.BothLogActivity"
+            android:exported="true"
             android:label="Log LiveEdge"
             android:theme="@style/DetailTheme"
             tools:replace="android:label" />

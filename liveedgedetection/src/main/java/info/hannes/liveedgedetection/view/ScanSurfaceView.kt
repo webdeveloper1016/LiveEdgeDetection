@@ -322,7 +322,7 @@ class ScanSurfaceView(context: Context, iScanner: IScanner, val TIME_HOLD_STILL:
     }
     private val mShutterCallBack = ShutterCallback {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audioManager.playSoundEffect(AudioManager.FLAG_PLAY_SOUND)
+        audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
