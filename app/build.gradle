@@ -107,7 +107,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
-    implementation project(':liveedgedetection')
+    implementation project(':library')
     implementation 'com.github.AppDevNext.Logcat:LogcatCrashlytic:2.9.1'
     implementation 'com.github.hannesa2:githubAppUpdate:1.3'
 
