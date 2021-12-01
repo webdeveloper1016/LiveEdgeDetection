@@ -8,7 +8,7 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import info.hannes.liveedgedetection.demo.databinding.ActivityStartBinding
-import info.hannes.logcat.BothLogActivity
+import info.hannes.logcat.ui.BothLogActivity
 
 class StartActivity : AppCompatActivity() {
 
