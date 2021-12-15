@@ -16,17 +16,20 @@ import com.google.android.material.snackbar.Snackbar
 import info.hannes.github.AppUpdateHelper
 import info.hannes.liveedgedetection.*
 import info.hannes.liveedgedetection.activity.ScanActivity
+import info.hannes.liveedgedetection.demo.databinding.ActivityPreviewBinding
 import info.hannes.liveedgedetection.utils.*
-import kotlinx.android.synthetic.main.activity_preview.*
 import timber.log.Timber
 import java.io.File
 
 class PreviewActivity : AppCompatActivity() {
     private var filePath: String? = null
+    private lateinit var binding: ActivityPreviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_preview)
+        binding = ActivityPreviewBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         startScan()
 
@@ -54,11 +57,11 @@ class PreviewActivity : AppCompatActivity() {
                     filePath = bundle.getString(ScanConstants.SCANNED_RESULT)
                     filePath?.let {
                         val baseBitmap = it.decodeBitmapFromFile()
-                        scanned_image.setImageBitmap(baseBitmap)
-                        scanned_image.scaleType = ImageView.ScaleType.FIT_CENTER
+                        binding.scannedImage.setImageBitmap(baseBitmap)
+                        binding.scannedImage.scaleType = ImageView.ScaleType.FIT_CENTER
 
-                        textDensity.text = "Density ${baseBitmap.density}"
-                        textDimension.text = "${baseBitmap.width} / ${baseBitmap.height}"
+                        binding.textDensity.text = "Density ${baseBitmap.density}"
+                        binding.textDimension.text = "${baseBitmap.width} / ${baseBitmap.height}"
 
                         showSnackbar(it)
                         Timber.i(it)
@@ -70,19 +73,19 @@ class PreviewActivity : AppCompatActivity() {
             }
         }
 
-        buttonOpenExtern.setOnClickListener {
+        binding.buttonOpenExtern.setOnClickListener {
             externalCacheDir?.let { path ->
                 filePath?.let { file ->
-                    PreviewActivity@ this.viewPdf(File(file).createPdf(path))
+                    this.viewPdf(File(file).createPdf(path))
                 }
             }
         }
 
-        buttonRotate.setOnClickListener {
+        binding.buttonRotate.setOnClickListener {
             filePath?.let {
                 var baseBitmap = it.decodeBitmapFromFile()
                 baseBitmap = baseBitmap.rotate(90f)
-                scanned_image.setImageBitmap(baseBitmap)
+                binding.scannedImage.setImageBitmap(baseBitmap)
                 this.storeBitmap(baseBitmap, File(it))
             }
         }
