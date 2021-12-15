@@ -5,7 +5,6 @@ import static org.gradle.internal.logging.text.StyledTextOutput.Style
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 }
@@ -21,6 +20,10 @@ android {
         versionName getTag()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", 'GIT_REPOSITORY', "\"" + getGitOriginRemote() + "\""
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     signingConfigs {

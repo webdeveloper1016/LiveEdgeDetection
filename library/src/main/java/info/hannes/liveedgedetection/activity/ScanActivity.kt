@@ -22,9 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import info.hannes.liveedgedetection.*
+import info.hannes.liveedgedetection.databinding.ActivityScanBinding
 import info.hannes.liveedgedetection.utils.*
 import info.hannes.liveedgedetection.view.ScanSurfaceView
-import kotlinx.android.synthetic.main.activity_scan.*
 import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -47,19 +47,22 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     private var screenSizeBitmap: Bitmap? = null
     private var fullSizeBitmap: Bitmap? = null
     private var timeHoldStill: Long = ScanSurfaceView.DEFAULT_TIME_POST_PICTURE
+    private lateinit var binding: ActivityScanBinding
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityScanBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         timeHoldStill = intent.getLongExtra(ScanConstants.TIME_HOLD_STILL, ScanSurfaceView.DEFAULT_TIME_POST_PICTURE)
-        setContentView(R.layout.activity_scan)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        buttonCropOk.setOnClickListener(this)
-        buttonCropReject.setOnClickListener {
-            TransitionManager.beginDelayedTransition(container_scan)
-            crop_layout.visibility = View.GONE
+        binding.buttonCropOk.setOnClickListener(this)
+        binding.buttonCropReject.setOnClickListener {
+            TransitionManager.beginDelayedTransition(binding.containerScan)
+            binding.cropLayout.visibility = View.GONE
             imageSurfaceView?.setPreviewCallback()
         }
         checkCameraPermissions()
@@ -78,7 +81,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         } else {
             if (isCameraPermissionGranted) {
                 imageSurfaceView = ScanSurfaceView(this@ScanActivity, this, timeHoldStill)
-                camera_preview.addView(imageSurfaceView)
+                binding.cameraPreview.addView(imageSurfaceView)
             } else {
                 isCameraPermissionGranted = true
             }
@@ -114,7 +117,7 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Handler(Looper.getMainLooper()).post {
                 imageSurfaceView = ScanSurfaceView(this@ScanActivity, this@ScanActivity, timeHoldStill)
-                camera_preview.addView(imageSurfaceView)
+                binding.cameraPreview.addView(imageSurfaceView)
             }
         } else {
             Toast.makeText(this, getString(R.string.permission_denied_camera_toast), Toast.LENGTH_SHORT).show()
@@ -129,29 +132,29 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
     }
 
     override fun displayHint(scanHint: ScanHint) {
-        capture_hint_layout.visibility = View.VISIBLE
+        binding.captureHintLayout.visibility = View.VISIBLE
         when (scanHint) {
             ScanHint.MOVE_CLOSER -> {
-                capture_hint_text.text = resources.getString(R.string.move_closer)
-                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
+                binding.captureHintText.text = resources.getString(R.string.move_closer)
+                binding.captureHintLayout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
             }
             ScanHint.MOVE_AWAY -> {
-                capture_hint_text.text = resources.getString(R.string.move_away)
-                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
+                binding.captureHintText.text = resources.getString(R.string.move_away)
+                binding.captureHintLayout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
             }
             ScanHint.ADJUST_ANGLE -> {
-                capture_hint_text.text = resources.getString(R.string.adjust_angle)
-                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
+                binding.captureHintText.text = resources.getString(R.string.adjust_angle)
+                binding.captureHintLayout.background = ContextCompat.getDrawable(this, R.drawable.hint_red)
             }
             ScanHint.FIND_RECT -> {
-                capture_hint_text.text = resources.getString(R.string.finding_rect)
-                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_white)
+                binding.captureHintText.text = resources.getString(R.string.finding_rect)
+                binding.captureHintLayout.background = ContextCompat.getDrawable(this, R.drawable.hint_white)
             }
             ScanHint.CAPTURING_IMAGE -> {
-                capture_hint_text.text = resources.getString(R.string.hold_still)
-                capture_hint_layout.background = ContextCompat.getDrawable(this, R.drawable.hint_green)
+                binding.captureHintText.text = resources.getString(R.string.hold_still)
+                binding.captureHintLayout.background = ContextCompat.getDrawable(this, R.drawable.hint_green)
             }
-            ScanHint.NO_MESSAGE -> capture_hint_layout.visibility = View.GONE
+            ScanHint.NO_MESSAGE -> binding.captureHintLayout.visibility = View.GONE
         }
     }
 
@@ -187,15 +190,15 @@ class ScanActivity : AppCompatActivity(), IScanner, View.OnClickListener {
                 for (pointF in points) {
                     pointFs[++index] = pointF
                 }
-                polygon_view.points = pointFs
+                binding.polygonView.points = pointFs
                 val padding = resources.getDimension(R.dimen.scan_padding).toInt()
                 val layoutParams = FrameLayout.LayoutParams(it.width + 2 * padding, it.height + 2 * padding)
                 layoutParams.gravity = Gravity.CENTER
-                polygon_view.layoutParams = layoutParams
-                TransitionManager.beginDelayedTransition(container_scan)
-                crop_layout.visibility = View.VISIBLE
-                crop_image_view.setImageBitmap(it)
-                crop_image_view.scaleType = ImageView.ScaleType.FIT_XY
+                binding.polygonView.layoutParams = layoutParams
+                TransitionManager.beginDelayedTransition(binding.containerScan)
+                binding.cropLayout.visibility = View.VISIBLE
+                binding.cropImageView.setImageBitmap(it)
+                binding.cropImageView.scaleType = ImageView.ScaleType.FIT_XY
             }
             fullSizeBitmap?.let {
                 val originalMat = Mat(it.height, it.width, CvType.CV_8UC1)
