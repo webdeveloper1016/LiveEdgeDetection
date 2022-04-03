@@ -135,7 +135,7 @@ task decryptPrivate {
     def out = services.get(StyledTextOutputFactory).create("")
 
     def pass = "$System.env.CRYPT_PASS"
-    if (pass == "null") {
+    if (pass.toString() == "null") {
         out.style(Style.Normal).text("In decrypt files the mandatory ")
                 .style(Style.Failure).println('CRYPT_PASS not set')
                 .style(Style.Normal).println("  If you want use Firebase features, please set it with ")
