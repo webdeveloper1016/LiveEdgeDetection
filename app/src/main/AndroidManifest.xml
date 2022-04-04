@@ -27,7 +27,7 @@
             android:exported="true" />
 
         <activity
-            android:name="info.hannes.logcat.BothLogActivity"
+            android:name="info.hannes.logcat.ui.BothLogActivity"
             android:exported="true"
             android:label="Log LiveEdge"
             android:theme="@style/DetailTheme"
