@@ -47,14 +47,14 @@ Out of the box it uses OpenCV.
 
 1. Start **startActivityForResult** from your activity
 ```
-startActivityForResult(new Intent(this, ScanActivity.class), REQUEST_CODE);
+startActivityForResult(Intent(this, ScanActivity::class.java), REQUEST_CODE)
 ```
 2. Get a file path for cropped image on **onActivityResult**
 ```
-String filePath = data.getExtras().getString(ScanConstants.SCANNED_RESULT);
-Bitmap baseBitmap = ScanUtils.decodeBitmapFromFile(filePath, ScanConstants.IMAGE_NAME);
+val filePath = data?.extras?.getString(ScanConstants.SCANNED_RESULT)
+val baseBitMap = filePath.decodeBitmapFromFile()
 ```
-3. Display the image using **TouchImageView**
+3. Display the image using **TouchImageView** https://github.com/MikeOrtiz/TouchImageView
 ```
 <com.ortiz.touchview.TouchImageView
         android:id="@+id/scanned_image"
@@ -65,7 +65,7 @@ Bitmap baseBitmap = ScanUtils.decodeBitmapFromFile(filePath, ScanConstants.IMAGE
 
 ## License LiveEdgeDetection
 ```
-Copyright 2020 hannesa2.
+Copyright 2022 hannesa2.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -100,6 +100,4 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 ```
-
